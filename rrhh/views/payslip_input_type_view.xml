@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_input_type_tree_view" model="ir.ui.view">
+        <field name="name">hr.input.type.tree</field>
+        <field name="model">hr.payslip.input.type.2</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code" decoration-bf="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_input_type_form_view" model="ir.ui.view">
+        <field name="name">hr.payslip.input.type.form</field>
+        <field name="model">hr.payslip.input.type.2</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Entradas">
+                <group style="width:70%">
+                    <field name="name" string="Nombre"/>
+                    <field name="code" string="Codigo"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_input_type" model="ir.actions.act_window">
+        <field name="name">Otras Entradassss</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.payslip.input.type.2</field>
+        <field name="view_mode">form,tree</field>
+    </record>
+
+</odoo>

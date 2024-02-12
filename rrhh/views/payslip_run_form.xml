@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_hr_payslip_run_inherited" model="ir.ui.view">
+        <field name="name">hr.payslip.run.inherited.form</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="payroll.hr_payslip_run_view_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+
+                <field name="tipo_nomina" string="Tipo de Nómina"/>
+
+                <field name="recibo_id" attrs="{'invisible': [('tipo_nomina', '!=', 'nomina_base')]}" string="Recibo"/>
+
+            </field>
+        </field>
+    </record>
+</odoo>

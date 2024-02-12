@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    ####################### Otro tipo de entradas ################ -->
+    <record id="DL" model="hr.payslip.input.type.2">
+        <field name="name">Dias Laborados</field>
+        <field name="code">DL</field>
+    </record>
+
+    <record id="HEXT" model="hr.payslip.input.type.2">
+        <field name="name">Horas Extras</field>
+        <field name="code">HEXT</field>
+    </record>
+
+    <record id="HEXT2" model="hr.payslip.input.type.2">
+        <field name="name">Horas Extras Dobles</field>
+        <field name="code">HEXT2</field>
+    </record>
+
+    <record id="COMI" model="hr.payslip.input.type.2">
+        <field name="name">Comisiones</field>
+        <field name="code">COMI</field>
+    </record>
+
+    <record id="DSCTSPREST" model="hr.payslip.input.type.2">
+        <field name="name">Descuento Prestaciones</field>
+        <field name="code">DSCTSPREST</field>
+    </record>
+
+    <record id="ISR" model="hr.payslip.input.type.2">
+        <field name="name">ISR</field>
+        <field name="code">ISR</field>
+    </record>
+
+    <record id="OTROSDESCU" model="hr.payslip.input.type.2">
+        <field name="name">Otros Descuentos</field>
+        <field name="code">OTROSDESCU</field>
+    </record>
+
+    <record id="ALM" model="hr.payslip.input.type.2">
+        <field name="name">Almuerzos</field>
+        <field name="code">ALM</field>
+    </record>
+
+    <record id="DESCTOSUPA" model="hr.payslip.input.type.2">
+        <field name="name">Descuentos UPA</field>
+        <field name="code">DESCTOSUPA</field>
+    </record>
+
+    <record id="OTROSINGRE" model="hr.payslip.input.type.2">
+        <field name="name">Otros Ingresos</field>
+        <field name="code">OTROSINGRE</field>
+    </record>
+
+    <record id="SALPROM" model="hr.payslip.input.type.2">
+        <field name="name">Salario Promedio</field>
+        <field name="code">SALPROM</field>
+    </record>
+
+    <record id="VAC" model="hr.payslip.input.type.2">
+        <field name="name">Dias de Vacaciones</field>
+        <field name="code">VAC</field>
+    </record>
+
+    <record id="DLABIND" model="hr.payslip.input.type.2">
+        <field name="name">Dias Indemnizacion</field>
+        <field name="code">DLABIND</field>
+    </record>
+
+    <record id="DLABAGUI" model="hr.payslip.input.type.2">
+        <field name="name">Dias Laborados Aguinaldo</field>
+        <field name="code">DLABAGUI</field>
+    </record>
+
+    <record id="DLABB14" model="hr.payslip.input.type.2">
+        <field name="name">Dias Laborados Bono 14</field>
+        <field name="code">DLABB14</field>
+    </record>
+
+    <!-- ########## Categorias de Salario #############-->
+
+    <record id="DATO" model="hr.salary.rule.category">
+        <field name="name">Dato</field>
+        <field name="code">DATO</field>
+    </record>
+
+    <record id="SB" model="hr.salary.rule.category">
+        <field name="name">Subcidio</field>
+        <field name="code">SB</field>
+    </record>
+
+    <record id="DE" model="hr.salary.rule.category">
+        <field name="name">Deduccion</field>
+        <field name="code">DE</field>
+    </record>
+
+    <record id="NET" model="hr.salary.rule.category">
+        <field name="name">Neto</field>
+        <field name="code">NET</field>
+    </record>
+
+    <!--########  Reglas Salariales ####### -->
+    <!--   1era Q   -->
+    <record id="hr_rule_001" model="hr.salary.rule">
+        <field name="name">Suedo Base</field>
+        <field name="sequence" eval="1"/>
+        <field name="code">SB</field>
+        <field name="category_id" ref="rrhh.DATO"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = contract.wage
+        </field>
+    </record>
+
+    <record id="hr_rule_002" model="hr.salary.rule">
+        <field name="name">Sueldo Base Devengado</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">SBD</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result =contract.wage/2
+        </field>
+    </record>
+
+    <record id="hr_rule_003" model="hr.salary.rule">
+        <field name="name">Otros Ingresos</field>
+        <field name="sequence" eval="3"/>
+        <field name="code">OTINGR</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.OTROSINGRE
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = inputs.OTROSINGRE.amount
+        </field>
+    </record>
+
+    <record id="hr_rule_004" model="hr.salary.rule">
+        <field name="name">Sueldo Neto</field>
+        <field name="sequence" eval="20"/>
+        <field name="code">NET</field>
+        <field name="category_id" ref="rrhh.NET"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = categories.SB + categories.DE
+        </field>
+    </record>
+
+    <record id="structure_1Q" model="hr.payroll.structure">
+        <field name="code">1Q</field>
+        <field name="name">1era Quincena</field>
+        <field
+                eval="[(6, 0, [ref('hr_rule_001'), ref('hr_rule_002'),ref('hr_rule_003'),ref('hr_rule_004')])]"
+                name="rule_ids"
+        />
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- 2da Quincena -->
+    <record id="hr_rule_005" model="hr.salary.rule">
+        <field name="name">Sueldo Base Devengado 2Q</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">SBD</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (contract.wage/30)*inputs.DL.amount if inputs.DL else 0
+        </field>
+    </record>
+
+    <record id="hr_rule_006" model="hr.salary.rule">
+        <field name="name">Sueldo Extraordinario</field>
+        <field name="sequence" eval="3"/>
+        <field name="code">SHEXT</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (((contract.wage/30)/8)*1.5)*inputs.HEXT.amount if inputs.HEXT else 0
+        </field>
+    </record>
+
+    <record id="hr_rule_007" model="hr.salary.rule">
+        <field name="name">Sueldo Extraordinario Doble</field>
+        <field name="sequence" eval="4"/>
+        <field name="code">SHEXT2</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (((contract.wage/30)/8)*2)*inputs.HEXT2.amount if inputs.HEXT2 else 0
+        </field>
+    </record>
+
+    <record id="hr_rule_008" model="hr.salary.rule">
+        <field name="name">Comisiones</field>
+        <field name="sequence" eval="5"/>
+        <field name="code">COMI</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.COMI
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = inputs.COMI.amount
+        </field>
+    </record>
+
+    <record id="hr_rule_009" model="hr.salary.rule">
+        <field name="name">Total Devengado</field>
+        <field name="sequence" eval="6"/>
+        <field name="code">TD</field>
+        <field name="category_id" ref="rrhh.DATO"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = categories.SB
+        </field>
+    </record>
+
+    <record id="hr_rule_010" model="hr.salary.rule">
+        <field name="name">IGSS Laborale</field>
+        <field name="sequence" eval="7"/>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="amount_select">percentage</field>
+        <field eval="-4.83" name="amount_percentage"/>
+        <field name="amount_percentage_base">SBD + SHEXT + SHEXT2</field>
+        <field name="code">IGSSLAB</field>
+    </record>
+
+    <record id="hr_rule_011" model="hr.salary.rule">
+        <field name="name">Descuento 1Q</field>
+        <field name="sequence" eval="8"/>
+        <field name="code">D1Q</field>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -payslip.env['hr.payslip'].quin_descount(employee.id,payslip.date_from)
+        </field>
+    </record>
+
+    <record id="hr_rule_012" model="hr.salary.rule">
+        <field name="name">Descuento Prestaciones</field>
+        <field name="sequence" eval="9"/>
+        <field name="code">DSCTSPREST</field>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.DSCTSPREST
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -inputs.DSCTSPREST.amount
+        </field>
+    </record>
+
+        <record id="hr_rule_013" model="hr.salary.rule">
+        <field name="name">Otros Descuentos</field>
+        <field name="sequence" eval="10"/>
+        <field name="code">OTROSDESCU</field>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.OTROSDESCU
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -inputs.OTROSDESCU.amount
+        </field>
+    </record>
+
+        <record id="hr_rule_014" model="hr.salary.rule">
+        <field name="name">Almuerzos</field>
+        <field name="sequence" eval="11"/>
+        <field name="code">ALM</field>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.OTROSDESCU
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -inputs.OTROSDESCU.amount
+        </field>
+    </record>
+
+    <record id="hr_rule_015" model="hr.salary.rule">
+        <field name="name">Descuentos UPA</field>
+        <field name="sequence" eval="12"/>
+        <field name="code">DESUPA</field>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.DESCTOSUPA
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -inputs.DESCTOSUPA.amount
+        </field>
+    </record>
+
+        <record id="hr_rule_016" model="hr.salary.rule">
+        <field name="name">ISR</field>
+        <field name="sequence" eval="13"/>
+        <field name="code">ISR</field>
+        <field name="category_id" ref="rrhh.DE"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.ISR
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = -inputs.ISR.amount
+        </field>
+    </record>
+
+       <record id="hr_rule_017" model="hr.salary.rule">
+        <field name="name">Bonificacion Decreto</field>
+        <field name="sequence" eval="14"/>
+        <field name="code">BONDEC</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = contract.bonificacion
+        </field>
+    </record>
+
+   <record id="hr_rule_018" model="hr.salary.rule">
+        <field name="name">Otros Ingresos</field>
+        <field name="sequence" eval="15"/>
+        <field name="code">OTROSINGRE</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.OTROSINGRE
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = inputs.OTROSINGRE.amount
+        </field>
+    </record>
+
+    <record id="structure_2Q" model="hr.payroll.structure">
+        <field name="code">2Q</field>
+        <field name="name">2da Quincena</field>
+        <field
+                eval="[(6, 0, [ref('hr_rule_001'), ref('hr_rule_004'),
+                ref('hr_rule_005'), ref('hr_rule_006'), ref('hr_rule_007'), ref('hr_rule_008'), ref('hr_rule_009'),
+                ref('hr_rule_010'), ref('hr_rule_011'), ref('hr_rule_012'), ref('hr_rule_013'), ref('hr_rule_014'),
+                ref('hr_rule_015'), ref('hr_rule_016'), ref('hr_rule_017'), ref('hr_rule_018')])]"
+                name="rule_ids"
+        />
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+<!-- Bono 14-->
+    <record id="hr_rule_019" model="hr.salary.rule">
+        <field name="name">Total Bono 14</field>
+        <field name="sequence" eval="5"/>
+        <field name="code">B14</field>
+        <field name="category_id" ref="rrhh.NET"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.SALPROM and inputs.DL
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (inputs.SALPROM.amount * inputs.DL.amount)/365
+        </field>
+    </record>
+
+    <record id="structure_B14" model="hr.payroll.structure">
+        <field name="code">B14</field>
+        <field name="name">Bono 14</field>
+        <field
+                eval="[(6, 0, [ref('hr_rule_019')])]"
+                name="rule_ids"
+        />
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Aguinaldo -->
+    <record id="hr_rule_020" model="hr.salary.rule">
+        <field name="name">Total Aguinaldo</field>
+        <field name="sequence" eval="5"/>
+        <field name="code">AGUI</field>
+        <field name="category_id" ref="rrhh.NET"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.SALPROM and inputs.DL
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (inputs.SALPROM.amount * inputs.DL.amount)/365
+        </field>
+    </record>
+
+    <record id="structure_AGUI" model="hr.payroll.structure">
+        <field name="code">AGUI</field>
+        <field name="name">Aguinaldo</field>
+        <field
+                eval="[(6, 0, [ref('hr_rule_020')])]"
+                name="rule_ids"
+        />
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Vacaciones -->
+    <record id="hr_rule_021" model="hr.salary.rule">
+        <field name="name">Total Vacaciones</field>
+        <field name="sequence" eval="5"/>
+        <field name="code">TAGUI</field>
+        <field name="category_id" ref="rrhh.NET"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.SALPROM and inputs.DL and inputs.VAC
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (inputs.SALPROM.amount/365)*(inputs.VAC.amount/30)* inputs.DL.amount
+        </field>
+    </record>
+
+    <record id="structure_vac" model="hr.payroll.structure">
+        <field name="code">VAC</field>
+        <field name="name">Vacaciones</field>
+        <field
+                eval="[(6, 0, [ref('hr_rule_021')])]"
+                name="rule_ids"
+        />
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+        <!-- FINIQUITO -->
+    <record id="hr_rule_022" model="hr.salary.rule">
+        <field name="name">Indemnizacion</field>
+        <field name="sequence" eval="1"/>
+        <field name="code">IND</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.SALPROM and inputs.DLABIND
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result =  (((inputs.SALPROM.amount/12 )*2 + inputs.SALPROM.amount) / 365)*inputs.DLABIND.amount
+        </field>
+    </record>
+
+    <record id="hr_rule_023" model="hr.salary.rule">
+        <field name="name">Finiquito Aguinaldo</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">FAGUI</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.DLABAGUI and inputs.SALPROM
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (inputs.SALPROM.amount/365)* inputs.DLABAGUI.amount
+        </field>
+    </record>
+
+    <record id="hr_rule_024" model="hr.salary.rule">
+        <field name="name">Finiquito Bono 14</field>
+        <field name="sequence" eval="3"/>
+        <field name="code">FB14</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.DLAB14 and inputs.SALPROM
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (inputs.SALPROM.amount/365)* inputs.DLAB14.amount
+        </field>
+    </record>
+
+    <record id="hr_rule_025" model="hr.salary.rule">
+        <field name="name">Finiquito Vacaciones</field>
+        <field name="sequence" eval="4"/>
+        <field name="code">FVAC</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+result = inputs.SALPROM and inputs.VAC
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = (inputs.SALPROM.amount/30)*inputs.VAC.amount
+        </field>
+    </record>
+
+        <record id="hr_rule_026" model="hr.salary.rule">
+        <field name="name">Total Finiquito</field>
+        <field name="sequence" eval="5"/>
+        <field name="code">TF</field>
+        <field name="category_id" ref="rrhh.SB"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = categories.SB
+        </field>
+    </record>
+
+    <record id="structure_fin" model="hr.payroll.structure">
+        <field name="code">FIN</field>
+        <field name="name">Finiquito Laboral</field>
+        <field
+                eval="[(6, 0, [ref('hr_rule_022'), ref('hr_rule_023'), ref('hr_rule_024'), ref('hr_rule_025'),
+                ref('hr_rule_026')])]"
+                name="rule_ids"
+        />
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+</odoo>

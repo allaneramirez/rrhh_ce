@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="rrhh_recibo" model="ir.actions.report">
+        <field name="name">Recibo</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rrhh.recibo</field>
+        <field name="report_file">rrhh.recibo</field>
+        <field name="binding_model_id" ref="model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,67 @@
+<odoo>
+    <data>
+
+
+        <record id="rrhh.hr_contract_view_form" model="ir.ui.view">
+            <field name="name">rrhh.hr.contract.view.form</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//group[@name='duration_group']" position="after">
+                    <group>
+                        <field name="fecha_reinicio_labores"/>
+                        <field name="motivo_terminacion"/>
+                        <field name="temporalidad_contrato"/>
+                        <field name="tipo_contrato"/>
+                        <field name="calcula_indemnizacion"/>
+                        <field name="bonificacion"/>
+                        <field name="otras_bonificaciones"/>
+                        <field name="historial_salario_ids">
+                            <tree string="Hitorial de salario" editable="bottom">
+                                <field name="salario"/>
+                                <field name="fecha"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                </xpath>
+
+                <notebook position="inside">
+                    <page string="ISR Proyectado" name="nuevo_tab">
+                        <group>
+                            <group string="Ingresos">
+                                <field name="otros_ingresos" string="Otros Ingresos anuales"/>
+                                <field name="ingreso_base_anual" string="Ingreso base anual" readonly="1"/>
+                                <field name="b14_isr" string="Bono 14 (1 salario anual sin incluir incentivo)"
+                                       readonly="1"/>
+                                <field name="agui_isr" string="Aguinaldo (1 salario anual sin incluir incentivo)"
+                                       readonly="1"/>
+                                <field name="ingreso_total_anual" string="Ingresos totales anuales (renta bruta)"
+                                       readonly="1" style="font-weight: bold"/>
+                            </group>
+                            <!-- Grupo de Deducciones -->
+                            <group string="Deducciones">
+                                <field name="deducciones_sin_comprobantes" string="Deducción sin comprobación de gastos"
+                                       readonly="1"/>
+                                <field name="deducciones_iggs" string="IGGS" readonly="1"/>
+                                <field name="b14_isr" string="Bono 14 (1 salario anual sin incluir incentivo)"
+                                       readonly="1"/>
+                                <field name="agui_isr" string="Aguinaldo (1 salario anual sin incluir incentivo)"
+                                       readonly="1"/>
+                                <field name="deducciones_total_anual" string="Deducciones Totales"
+                                       style="font-weight: bold"
+                                       readonly="1"/>
+
+                            </group>
+                            <!-- Grupo de Cálculo Final -->
+                            <group string="ISR Mensual">
+                                <field name="isr_total" string="Total ISR Mensual"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>

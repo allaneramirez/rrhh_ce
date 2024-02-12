@@ -1,0 +1,78 @@
+<odoo>
+
+    <record id="rrhh.view_employee_form" model="ir.ui.view">
+        <field name="name">rrhh.hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <page name="hr_settings" position="after">
+                    <page name="campos_especificos" string="Campos Especificos">
+                        <group>
+                            <group string="IGSS">
+                                <field name="numero_liquidacion"/>
+                                <field name="codigo_centro_trabajo"/>
+                                <field name="codigo_ocupacion"/>
+                                <field name="condicion_laboral"/>
+                            </group>
+                            <group string="Información de Pago">
+                                <field name="diario_pago_id"/>
+                            </group>
+                            <group string="Información Laboral">
+                                <field name="primer_nombre"/>
+                                <field name="segundo_nombre"/>
+                                <field name="primer_apellido"/>
+                                <field name="segundo_apellido"/>
+                                <field name="apellido_casada"/>
+                                <field name="pueblo_pertenencia"/>
+                                <field name="hijos"/>
+                                <field name="comunidad_ling"/>
+                                <field name="codigo_empleado"/>
+                                <field name="igss"/>
+                                <field name="irtra"/>
+                                <field name="nit"/>
+                                <field name="nivel_academico"/>
+                                <field name="profesion"/>
+                                <field name="etnia"/>
+                                <field name="comunidad_ling"/>
+                                <field name="idioma"/>
+                                <field name="pais_origen"/>
+                                <field name="trabajado_extranjero"/>
+                                <field name="tipo_discapacidad"/>
+                                <field name="motivo_finalizacion"/>
+                                <field name="jornada_trabajo"/>
+                                <field name="permiso_trabajo"/>
+                                <field name="contacto_emergencia"/>
+                                <field name="vecindad_dpi"/>
+                                <field name="documento_identificacion"/>
+                                <field name="numero_doc"/>
+                                <field name="forma_trabajo_extranjero"/>
+                                <field name="numero_permiso_extranjero"/>
+                                <field name="pais_trabajo_extranjero_id"/>
+                                <field name="finalizacion_laboral_extranjero"/>
+                            </group>
+                            <group string="Tarjetas Alimentarias">
+                                <field name="tarjeta_salud"/>
+                                <field name="tarjeta_fecha_vencimiento"/>
+                                <field name="tarjeta_manipulacion"/>
+                                <field name="tarjeta_pulmones"/>
+                            </group>
+                        </group>
+                    </page>
+                </page>
+                <field name="birthday" position="after">
+                    <field name="edad"/>
+                </field>
+                <field name="identification_id" position="after">
+                    <label for="departamento_id" string="Extendido en"/>
+                    <div class="o_address_format">
+                        <field name="departamento_id" placeholder="Departmento..." class="o_address_street"/>
+                        <field name="pais_id" placeholder="Pais..." class="o_address_street"/>
+                    </div>
+                </field>
+            </data>
+        </field>
+    </record>
+
+</odoo>
+

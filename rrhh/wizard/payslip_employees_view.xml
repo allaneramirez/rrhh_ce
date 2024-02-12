@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_hr_payslip_by_employees_inherit" model="ir.ui.view">
+        <field name="name">payroll_payslip_employees_inherit</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="payroll.view_hr_payslip_by_employees"/>
+        <field name="arch" type="xml">
+            <data>
+                 <xpath expr="//form/group" position="after">
+                     <label for="department_id" string="Departamento"/>
+                    <field name="department_id"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+</odoo>

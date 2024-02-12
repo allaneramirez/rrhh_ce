@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="recibo">
+        <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="12"/>
+            <t t-set="data_report_header_spacing" t-value="9"/>
+            <t t-set="data_report_dpi" t-value="110"/>
+            <div class="article">
+                <style>
+                    body {
+                    font-family: 'Arial', sans-serif;
+                    line-height: 1.6;
+                    font-size: 18px;
+                    color: #333;
+                    }
+
+                    table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                    font-size: 18px;
+                    }
+
+                    th, td {
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    text-align: left;
+                    }
+
+                    th {
+                    background-color: #f2f2f2;
+                    text-align: center;
+                    }
+
+                    .company-info {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    }
+
+                    .logo img {
+                    max-height: 45px;
+                    }
+
+                    .details {
+                    text-align: right;
+                    }
+
+                    .receipt {
+                    page-break-before: always;
+                    }
+
+                    .totals {
+                    border-top: 2px solid black;
+                    padding-top: 10px;
+                    }
+
+                    .signature {
+                    margin-top: 100px;
+                    margin-right: 8px;
+                    font-size: 18px;
+                    width: 100%;
+                    text-align: center;
+                    }
+
+                </style>
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="tipo_nomina" t-value="o.payslip_run_id.tipo_nomina"/>
+                    <t t-if="tipo_nomina == 'nomina_base'">
+                        <div class="receipt">
+                            <div class="company-info"
+                                 style="display: flex; align-items: center; justify-content: space-between; width:100%;">
+                                <div class="logo">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)"
+                                         style="max-height: 45px;" alt="Logo"/>
+                                </div>
+                                <div class="details">
+                                    <span t-field="o.company_id.name"/>
+                                    <t t-if="o.company_id.street">
+                                        <br/>
+                                        <strong>Dirección:</strong>
+                                        <span t-esc="o.company_id.street"/>
+                                    </t>
+                                    <t t-if="o.company_id.vat">
+                                        <br/>
+                                        <strong>NIT:</strong>
+                                        <span t-esc="o.company_id.vat"/>
+                                    </t>
+                                </div>
+                            </div>
+                            <table class="table table-sm table-condensed"
+                                   style="width:100%;margin-top:20px; font-size:18px;">
+                                <tr>
+                                    <td>
+                                        <strong>Nombre del Empleado:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.employee_id"/>
+                                    </td>
+                                    <td>
+                                        <strong>Referencia:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.number"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Departamento:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o.contract_id.department_id.name or o.employee_id.department_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>Puesto:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o.contract_id.job_id.name or o.employee_id.job_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>No. Afiliación IGSS:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o.employee_id.igss"/>
+                                    </td>
+                                    <td>
+                                        <strong>DPI:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o.employee_id.identification_id"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <strong>Sueldo Base mensual:</strong>
+                                    </td>
+                                    <td>
+                                        <span>Q.</span>
+                                        <span t-esc="o.contract_id.wage"/>
+                                    </td>
+
+                                    <td>
+                                        <strong>Código:</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="o.employee_id.codigo_empleado"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Periodo:</strong>
+                                    </td>
+                                    <td>
+                                        <span>Del:<![CDATA[&nbsp;]]> </span>
+                                        <span t-field="o.date_from"/>
+                                        <![CDATA[&nbsp;]]><![CDATA[&nbsp;]]>Al:<![CDATA[&nbsp;]]>
+                                        <span t-field="o.date_to"/>
+                                    </td>
+                                    <td>
+                                        <span>Dias laborados: <![CDATA[&nbsp;]]></span>
+                                    </td>
+                                    <!--                                    <t t-foreach="o.worked_days_line_ids" t-as="i">-->
+                                    <!--                                        <t t-set="dias" t-value="0.0"/>-->
+                                    <!--                                        <t t-if="i.code == 'TRABAJO100'">-->
+                                    <!--                                            <t t-set="dias" t-value="dias + i.number_of_days"/>-->
+                                    <!--                                            <td>-->
+                                    <!--                                                <span t-esc="dias"/>-->
+                                    <!--                                            </td>-->
+                                    <!--                                        </t>-->
+                                    <!--                                    </t>-->
+                                    <t t-foreach="o.line_ids" t-as="i">
+                                        <t t-set="dias" t-value="0.0"/>
+                                        <t t-if="i.salary_rule_id.code == 'TDL'">
+                                            <t t-set="dias" t-value="i.total"/>
+                                            <td>
+                                                <span t-esc="dias"/>
+                                            </td>
+                                        </t>
+                                    </t>
+                                </tr>
+                            </table>
+                            <br/>
+                            <!--                        ################## Ingresos y Deducciones ################# -->
+                            <div class="row" style="width:100%;margin-top:20px; font-size:18px;">
+                                <!--                            <span t-set="detail" t-value="o.get_payslip_data()"/>-->
+                                <!--                            <span t-set="total_line_data" t-value="o.get_payslip_data(flag=1)"/>-->
+                                <table>
+                                    <tr id="header-line">
+                                        <th style="width:25%">Ingresos</th>
+                                        <th style="width:25%" class="text-right">Monto</th>
+                                        <th style="width:25%">Gastos</th>
+                                        <th style="width:25%" class="text-right">Monto</th>
+                                    </tr>
+                                    <tr t-foreach="lineas(o)['lineas']" t-as="l">
+                                        <t t-if="l[0]">
+                                            <td>
+                                                <span t-esc="l[0]['nombre']"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="l[0]['total']"
+                                                      t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
+                                            </td>
+                                        </t>
+                                        <t t-if="l[1]">
+                                            <td style="padding-left:25px;">
+                                                <span t-esc="l[1]['nombre']"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="l[1]['total']"
+                                                      t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                    <tr style="border-top:2px solid black">
+                                        <th class="text-left">
+                                            Total de Ingresos:
+                                        </th>
+                                        <th class="text-right totals ">
+                                            <span t-esc="lineas(o)['totales'][0]"
+                                            t-options="{'widget': 'monetary', 'display_currency':
+                                            o.company_id.currency_id}"/>
+                                        </th>
+                                        <th class="text-left" style="padding-left:25px;">
+                                            Total de Deducciones:
+                                        </th>
+                                        <th class="text-right totals ">
+                                            <span t-esc="lineas(o)['totales'][1]"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th class="text-left"
+                                            style=" text-transform: uppercase; font-size: 18px;">
+                                            Líquido a recibir:
+                                        </th>
+                                        <th style="font-size: 18px;">
+                                            <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
+                                        </th>
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div class="signature"
+                            >
+                                <p>Firma: ______________________________________________</p>
+                                <span>
+                                    <t t-esc="o.employee_id.name"/>
+                                </span>
+                                <br/>
+                            </div>
+
+                        </div>
+                    </t>
+                    <!--                    BONO 14    -->
+                    <t t-if="tipo_nomina == 'bono_14'">
+                        <div class="receipt" style="height:800px;">
+                            <div class="header">
+                                <h2 style="text-align: center; padding-top:100px; margin-top:100px">Constancia de
+                                    Bonificación Anual
+                                </h2>
+                            </div>
+
+                            <div class="page">
+                                <p style="text-align:center; font-size:25px; padding-top:125px">RECIBO</p>
+                                <div class="oe_structure"/>
+
+                                <div class="row mt32" style="font-size:25px">
+                                    <div>
+                                        <p style="text-align: start; padding-top:50px">Por
+                                            <span t-field="o.net_wage"/>
+                                        </p>
+                                        <p style="padding-top:20px; text-align:justify">Recibí de
+                                            <span t-field="o.company_id.name" style="font-weight:600"/>
+                                            la cantidad de
+                                            <span t-field="o.net_wage" style="font-weight:600"/>
+                                            <span style="font-weight:600">uetzales.</span>
+                                            En concepto de bonificación anual contenida en el Decreto 42-92 del Congreso
+                                            de la República, Correspondiente al período del uno de julio del año<span
+                                                    t-esc="previous_year"/>al
+                                            treinta de junio del año
+                                            <span t-esc="current_year"/>
+                                            .
+                                        </p>
+
+                                        <!--                                        <p>Correspondiente al período del-->
+                                        <!--                                            <span t-field="o.date_from"/>-->
+                                        <!--                                            al <span t-field="o.date_to"/>.-->
+                                        <!--                                        </p>-->
+                                        <div style="text-align:center; width:100%; padding-top:85px ">
+                                            <p>f)___________________________________________
+
+                                            </p>
+                                            <span t-field="o.employee_id.name"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+
+                </t>
+                <!-- Aguinaldo-->
+                <t t-if="tipo_nomina == 'aguinaldo'">
+                    <div class="receipt" style="height:800px;">
+                        <div class="header">
+                            <h2 style="text-align: center; padding-top:100px; margin-top:100px">Constancia de
+                                Bonificación Anual
+                            </h2>
+                        </div>
+
+                        <div class="page">
+                            <p style="text-align:center; font-size:25px; padding-top:125px">RECIBO</p>
+                            <div class="oe_structure"/>
+
+                            <div class="row mt32" style="font-size:25px">
+                                <div>
+                                    <p style="text-align: start; padding-top:50px">Por
+                                        <span t-field="o.net_wage"/>
+                                    </p>
+                                    <p style="padding-top:20px; text-align:justify">Recibí de
+                                        <span t-field="o.company_id.name" style="font-weight:600"/>
+                                        la cantidad de
+                                        <span t-field="o.net_wage" style="font-weight:600"/>
+                                        <span style="font-weight:600">uetzales.</span>
+                                        En concepto de aguinaldo contenido en el Decreto 78-78 del Congreso
+                                        de la República, correspondiente al período del uno de diciembre del año<span
+                                                t-esc="previous_year"/>al
+                                        treinta de noviembre del año
+                                        <span t-esc="current_year"/>
+                                        .
+                                    </p>
+
+                                    <div style="text-align:center; width:100%; padding-top:85px ">
+                                        <p>f)___________________________________________
+
+                                        </p>
+                                        <span t-field="o.employee_id.name"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <!--                Vacaciones -->
+                <t t-if="tipo_nomina == 'vacaciones'">
+                    <div class="receipt" style="height:800px;">
+                        <div class="header">
+                            <h2 style="text-align: center; padding-top:100px; margin-top:100px">Constancia de
+                                Goze de Vacaciones
+                            </h2>
+                        </div>
+
+                        <div class="page">
+                            <p style="text-align:left; font-size:25px; padding-top:185px">Guatemala
+                                <span
+                                        t-esc="current_day"/>
+                                de
+                                <span t-esc="current_month_in_words"/>
+                                de
+                                <span t-esc="current_year"/>
+                            </p>
+                            <div class="oe_structure"/>
+
+                            <div class="row mt32" style="font-size:25px">
+                                <div>
+                                    <p style="text-align: start; padding-top:50px">A quien interese.</p>
+                                    <!--                                    <p style="padding-top:20px; text-align:justify">Estimado Señores:-->
+                                    <!--                                    </p>-->
+                                    <p style="text-align: start; padding-top:50px">
+                                        Por este medio hago constar que:
+                                    </p>
+                                    <p style="text-align: justify;">
+                                        He gozado mis vacaciones correspondientes al período Del
+                                        <span t-field="o.date_from"/>
+                                        al<span t-field="o.date_to"/>.
+                                        Con un total de
+                                        <t t-foreach="o.worked_days_line_ids" t-as="i">
+                                            <t t-set="dias" t-value="0.0"/>
+                                            <t t-if="i.code == 'LEAVE120'">
+                                                <t t-set="dias" t-value="int(i.number_of_days)"/>
+
+                                                <span t-esc="dias"/>
+
+                                            </t>
+                                        </t>
+
+                                        días.
+                                    </p>
+
+
+                                    <p style="text-align: justify;">
+                                        Para los efectos legales del artículo 137 del Código de Trabajo, extendiendo
+                                        la presente constancia.
+                                    </p>
+
+                                    <p style="text-align: justify;">
+                                        Atentamente,
+                                    </p>
+
+                                    <div style="text-align:center; width:100%; padding-top:85px ">
+                                        <p>f)___________________________________________
+
+                                        </p>
+                                        <span t-field="o.employee_id.name"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!--                FINIQUITO  -->
+                <t t-if="tipo_nomina == 'finiquito'">
+                    <div class="receipt" style="height:1000px;">
+                        <div class="page">
+                            <div class="logo">
+                                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)"
+                                     style="max-height: 45px;" alt="Logo"/>
+                            </div>
+                            <span t-field="o.company_id.name"
+                                  style="text-align:left; font-weight:700; font-weight:20px"/>
+                            <span t-field="o.company_id.street" style="text-align:left; font-weight:20px"/>
+                        </div>
+
+
+                        <div class="page">
+                            <p style="text-align:left; font-size:18px; padding-top:185px; font-weight:bold">FINIQUITO
+                                LABORAL
+
+                            </p>
+                            <div class="oe_structure"/>
+
+                            <div class="row mt32" style="font-size:18px">
+                                <div>
+
+                                    <p style="text-align: justify;">
+                                        En la ciudad de Guatemala, el <span t-esc="current_day"/>
+                                        de
+                                        <span t-esc="current_month_in_words"/>
+                                        de
+                                        <span t-esc="current_year"/>
+                                        Yo,
+                                        <span t-esc="o.employee_id.name"/> de <span t-esc="o.employee_id.edad"/> años de edad,
+                                        <t t-if="o.employee_id.gender == 'male'">guatemalteco</t>
+                                        <t t-if="o.employee_id.gender != 'male'">guatemalteca</t>
+                                        por
+                                        nacimiento, con residencia en:
+                                        <span t-esc="o.employee_id.address_home_id.street"/>,e identificándome mediante Documento Personal de Identificación número
+                                        <span t-esc="o.employee_id.identification_id"/>, extendido por el Registro Nacional de las
+                                        Personas de la República de Guatemala RENAP. Por el presente documento dejo
+                                        constancia de lo siguiente: Primero: Que ingresé a laborar a&#160;
+                                        <span t-esc="o.company_id.name" style="font-weight:bold"/>,
+                                        S.A. el&#160;
+                                        <span t-esc="formato_fecha(o.contract_id.date_start)"/>, habiendo sido <t t-if="o.employee_id.gender == 'male'">despedido</t>
+                                        <t t-if="o.employee_id.gender != 'male'">despedida</t> el <span t-esc="formato_fecha(o.contract_id.date_end)"/>.
+                                        segundo: En este momento y a mi entera satisfacción, el patrono me cancela: a). Las partes proporcionales de mis prestaciones irrenunciables
+                                        e indemnización según detalle adjunto que forma parte de este instrumento. Hago constar
+                                        asimismo de que en su oportunidad se me cancelaron totalmente los salarios ordinarios y
+                                        extraordinarios, por lo cual estoy de acuerdo no corresponde reajuste de salarial,
+                                        así como las prestaciones laborales que me correspondían, así mismo que tampoco gocé
+                                        de ventajas económicas, por lo que ningún pago me corresponde al respecto y
+                                        que habiendo celebrado en su oportunidad el contrato de trabajo,
+                                        no existe ninguna presunción legal que a mi favor pueda alegar. Tercero:
+                                        Por lo expuesto otorgo a favor de <span t-esc="o.company_id.name" style="font-weight:bold"/>,
+                                        extiendo el más amplio, completo y eficaz finiquito laboral por el tiempo servido,
+                                        sin reservarme acción alguna quedando definitivamente disuelto el vínculo jurídico
+                                        laboral entre mi persona y la empresa. Leo íntegramente lo escrito y bien enterado
+                                        de su valor, contenido y efectos legales, lo ratifico, acepto y firmo.
+                                        <p style="padding-top:75px">f)</p>
+                                        <p style="text-align:justify">
+                                            En la ciudad de Guatemala, el <span t-esc="current_day"/>
+                                        de
+                                        <span t-esc="current_month_in_words"/>
+                                        de
+                                        <span t-esc="current_year"/> COMO NOTARIO.
+                                            Doy fe: a). Que la firma es auténtica por haber sido puesta en mi presencia el
+                                            día de hoy por la persona a quien pertenece.  b).  A quien por no conocer con anterioridad
+                                            al presente acto se identifica con Documento Personal de Identificación número
+                                            <span t-esc="o.employee_id.identification_id"/>, quien firma conjuntamente con el
+                                            infrascrito notario la presente acta de legalización de firmas.
+                                        </p>
+                                        <p style="padding-top:75px">f)</p>
+                                        <span >ANTE MI:</span>
+
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

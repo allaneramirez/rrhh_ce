@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_planilla_inputs_form" model="ir.ui.view">
+        <field name="name">planilla.inputs.form</field>
+        <field name="model">rrhh.inputs.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Insertar entradas">
+                <field name="files" required="True"/>
+                <footer>
+                    <button name="create_inputs" string="Insertar" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inputs_wizard" model="ir.actions.act_window">
+        <field name="name">Entradas</field>
+        <field name="res_model">rrhh.inputs.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_planilla_inputs_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_hr_payslip_run"/>
+    </record>
+</odoo>
+
