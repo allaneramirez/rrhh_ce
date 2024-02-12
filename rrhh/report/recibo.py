@@ -88,7 +88,7 @@ class ReportRecibo(models.AbstractModel):
         current_day = datetime.now().day
 
         # Configurar la localización a español
-        locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
+        # locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
 
         # Obtener el nombre del mes
         current_month_in_words = datetime.now().strftime('%B')
