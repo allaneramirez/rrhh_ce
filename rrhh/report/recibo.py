@@ -3,6 +3,8 @@ import locale
 from odoo import api, models, fields
 from datetime import datetime
 
+
+
 class ReportRecibo(models.AbstractModel):
     _name = 'report.rrhh.recibo'
     _description = 'Repote recibo'
@@ -76,7 +78,9 @@ class ReportRecibo(models.AbstractModel):
             return fecha.strftime('%d de %B de %Y')
         else:
             return ''
-
+    def formato_salario(self,salario):
+        salario_formateado = "Q{:,.2f}".format(salario)
+        return salario_formateado
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -87,7 +91,7 @@ class ReportRecibo(models.AbstractModel):
         previous_year = current_year - 1
         current_day = datetime.now().day
 
-        # Configurar la localización a español
+        # # Configurar la localización a español
         # locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
 
         # Obtener el nombre del mes
@@ -100,6 +104,7 @@ class ReportRecibo(models.AbstractModel):
             'lineas': self.lineas,
             'formato_fecha': self.formato_fecha,
             'index_range': range(len(docs)),
+            'formato_salario': self.formato_salario,
             'current_year': current_year,
             'previous_year': previous_year,
             'current_day': current_day,

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="dis_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+
+                    <div class="page">
+                        <style>
+                            body {
+                            font-size: 14px;
+                            }
+                            .table-style th,
+                            .table-style td {
+                            border: 1px solid black;
+                            padding: 8px;
+                            font-family: sans-serif;
+                            }
+                            .table-style th {
+                            background-color: #f2f2f2;
+                            }
+                            .main-text {
+                            font-family: sans-serif;
+                            font-weight: bold;
+
+                            }
+
+                        </style>
+                        <table class="table-style">
+                            <tr>
+                                <td colspan="4.5">
+                                    <p class="main-text">ACCIÓN DE PERSONAL</p>
+                                    <p>FECHA: <span t-field="o.action_date"></span></p>
+                                </td>
+                                <td colspan="4.5">
+                                    <p class="main-text">EMPLEADO</p>
+                                    <span t-field="o.employee_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4.5">
+                                    <p class="main-text">DPI</p>
+                                     <span t-field="o.employee_name.vecindad_dpi"/>
+                                </td>
+                                <td colspan="4.5">
+                                    <p class="main-text">PUESTO/AREA</p>
+                                    <span t-field="o.employee_name.job_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="9" style="font-weight:bold; background: gray">Proceso Administrativo</td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"><span t-field="o.discipline_reason"></span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9" style="font-weight:bold; background: gray">Otros motivos: <span t-field="o.motivo"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9">
+                                    <p class="main-text">
+                                        Informe del caso
+                                    </p>
+                                    <p t-field="o.note"/>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="9">
+                                    <p t-field="o.action_details"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="9">
+                                    <p>
+                                        Artículo 63. Obligaciones de los trabajadores: Desempeñar el servicio contratado
+                                        bajo la dirección del patrono o de su representante, a cuya autoridad quedan
+                                        sujetos en todo lo concerniente al trabajo. b) Ejecutar el trabajo con la
+                                        eficiencia,cuidado y esmero apropiados y en la forma, tiempo y lugar convenidos.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <p style="text-align:center; background:#919191; font-weight:bold">
+                                        NOTIFICACIÓN DEL ACTA AL EMPLEADO
+                                    </p>
+                                    <br/>
+                                    <br/>
+                                    <p>Fecha: __________________________________</p>
+                                </td>
+                                <td colspan="3">
+                                    <p style="text-align:center; background:#919191; font-weight:bold">
+                                        TRABAJADOR
+                                    </p>
+                                    <br/>
+                                    <br/>
+                                    <p>f. __________________________________</p>
+                                    <p>Nombre: <span t-field="o.employee_name"/></p>
+                                </td>
+                                <td colspan="3">
+                                    <p style="text-align:center; background:#919191; font-weight:bold">
+                                        JEFE DEL ÁREA
+                                    </p>
+                                    <br/>
+                                    <br/>
+                                    <p>f. __________________________________</p>
+                                    <p>Nombre:</p>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3">
+                                    <p style="text-align:center; background:#919191; font-weight:bold">
+                                        TESTIGO
+                                    </p>
+                                    <br/>
+                                    <br/>
+                                    <p>f: __________________________________</p>
+                                    <p>Nombre:</p>
+                                </td>
+                                <td colspan="3">
+                                    <p style="text-align:center; background:#919191; font-weight:bold">
+                                        RECURSOS HUMANOS
+                                    </p>
+                                    <br/>
+                                    <br/>
+                                    <p>f: __________________________________</p>
+                                    <p>Nombre:</p>
+                                </td>
+                                <td colspan="3">
+                                    <p style="text-align:center; background:#919191; font-weight:bold">
+                                        SELLO
+                                    </p>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <p>__________________________________</p>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="page-break-before: always;"/>
+                    <div class="page">
+                        <style>
+                            body {
+                            font-size: 15px;
+                            width:100%
+                            }
+                            .table-style{
+                            width:100%
+                            }
+                            .table-style th,
+                            .table-style td {
+                            border: 1px solid black;
+                            padding: 14px;
+                            font-family: sans-serif;
+                            }
+                            .table-style th {
+                            background-color: #f2f2f2;
+                            }
+                            .main-text {
+                            font-family: sans-serif;
+                            font-weight: bold;
+                            }
+
+                        </style>
+                        <table class="table-style">
+                            <tr>
+                                <td colspan="4.5">
+                                    <p class="main-text">EXPLICACION DE PERSONAL</p>
+                                    <p>FECHA:     </p>
+                                </td>
+                                <td colspan="4.5">
+                                    <p class="main-text">Empleado</p>
+                                    <p t-field="o.employee_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4.5">
+                                    <p class="main-text">DPI</p>
+                                    <p>123456</p>
+                                </td>
+                                <td colspan="4.5">
+                                    <p class="main-text">PUESTO/AREA</p>
+                                    <p>Puesto del empleado</p>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="9" style="font-weight:bold; background: gray">Proceso Administrativo:</td>
+                            </tr>
+                            <tr>
+                                <td colspan="9" style="font-weight:bold; background: gray">En este espacio coloque la
+                                    versión de los hechos:
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="9"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

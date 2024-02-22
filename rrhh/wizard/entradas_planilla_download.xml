@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_plantilla_inputs_form" model="ir.ui.view">
+        <field name="name">planilla.inputs.form</field>
+        <field name="model">rrhh.inputs.download.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Plantilla de entradas">
+               <group>
+                    <field name="inputs_ids" class="oe_inline" required="True" widget="many2many_tags"/>
+                    <field name="name" colspan="4" invisible="1"/>
+                   <field name="archivo" filename="name" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="download_template" string="Descargar Plantilla" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inputs_template_wizard" model="ir.actions.act_window">
+        <field name="name">Descargar Plantilla</field>
+        <field name="res_model">rrhh.inputs.download.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_plantilla_inputs_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_hr_payslip_run"/>
+    </record>
+</odoo>
+

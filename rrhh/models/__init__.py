@@ -10,4 +10,6 @@ from . import hr_payslip_input_type
 from . import hr_payslip_input
 from . import rrhh
 from . import hr_payslip_employees
-
+from . import payslip_run
+from . import hr_leave
+from . import payslip_change_state

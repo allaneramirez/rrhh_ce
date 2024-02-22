@@ -12,6 +12,8 @@ from calendar import monthrange
 from odoo.fields import Date, Datetime
 from odoo.addons.l10n_gt_extra import a_letras
 from odoo.exceptions import ValidationError
+
+
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
@@ -19,6 +21,8 @@ class HrPayslip(models.Model):
                                              related='employee_id.category_ids')
     cuenta_analitica_id = fields.Many2one('account.analytic.account', 'Cuenta analítica')
     net_wage = fields.Float(compute='_compute_basic_net', store=True)
+    period_from = fields.Char()
+    period_to = fields.Char()
 
     @api.depends('line_ids.total')
     def _compute_basic_net(self):
@@ -55,7 +59,6 @@ class HrPayslip(models.Model):
                 ['&', ("payslip_id", "=", slip.id), ('name', '=', 'Trabajo 100')])
             days += worked_day.number_of_days
         return days
-
 
     def load_salaries(self):
         contracts = self.env["hr.contract"].search([("state", "=", "open")])
@@ -134,7 +137,8 @@ class HrPayslip(models.Model):
             dias_laborados = slip_id.date_to - fecha_inicio_actual
             return dias_laborados.days
         else:
-            fecha_inicio_año_pasado = datetime.datetime(year_pasado, contract_id.date_start.month, contract_id.date_start.day)
+            fecha_inicio_año_pasado = datetime.datetime(year_pasado, contract_id.date_start.month,
+                                                        contract_id.date_start.day)
             dias_laborados = slip_id.date_to - fecha_inicio_año_pasado
             return dias_laborados.days
 
@@ -148,15 +152,14 @@ class HrPayslip(models.Model):
             ('employee_id', '=', employee[0].id),
             ('struct_id.name', '=', '1era Quincena'),
             ('date_to', 'like', payslip.strftime('%Y-%m')),
-            ('state','in',['done','paid'])
+            ('state', 'in', ['done', 'paid'])
         ], limit=1)
-        print(previous_payslip,"previus!~~")
+        print(previous_payslip, "previus!~~")
         if previous_payslip:
             result = previous_payslip[0].net_wage
         else:
             result = 0
         return result
-
 
     def diasLaboradosAgui(self, contract_id, slip_id):
         year_actual = datetime.datetime.now().year
@@ -181,7 +184,8 @@ class HrPayslip(models.Model):
             fecha_inicio_año_pasado = datetime.datetime(year_pasado, 7, 1)
             dias_laborados = slip_id.date_to - fecha_inicio_año_pasado
             return dias_laborados.days
-    def calculo_total(self,id):
+
+    def calculo_total(self, id):
         payslip = self.env['hr.payslip'].search([('id', '=', id)])
         paylip_lines = payslip.line_ids
         for line in paylip_lines:
@@ -189,7 +193,7 @@ class HrPayslip(models.Model):
                 sequence = line.salary_rule_id.sequence
                 result = 0
                 for l in paylip_lines:
-                    if l.salary_rule_id.sequence == sequence-1:
+                    if l.salary_rule_id.sequence == sequence - 1:
                         result += l.total
                 return result
                 ###### DIAS LABORADOS #####
@@ -200,46 +204,52 @@ class HrPayslip(models.Model):
                         total_input += input.amount
                 return total_input
 
-    def _get_worked_day_lines(self):
-        # regresa una lista de dicionarios que contienen los dias trabajados que deberia aplicarse la nomina dada
-        res = super(HrPayslip, self)._get_worked_day_lines()
+    def _compute_leave_days(self, contract, day_from, day_to):
+        res = super(HrPayslip, self)._compute_leave_days(contract, day_from, day_to)
+        print(self.date_from, "formmm", self)
+        # if self.date_from:
+        año, mes, _ = str(self.date_from).split("-")
+        for r in res:
+            if r['code'] == 'VAC' and self.struct_id.name == "1era Quincena":
+                # Buscamos el tipo de entrada por el codigo para buscar la ausencia
+                leave_type = self.env['hr.leave.type'].search([('code', '=', 'VAC')])
+                vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
+                                                            ('holiday_status_id', '=', leave_type[0].id),
+                                                            ('request_date_from', 'ilike', año + "-" + mes),
+                                                            ('state', '=', 'validate')], limit=1)
 
+                total_vacaciones = vaction_days.number_of_days_display
+                r['number_of_days'] = total_vacaciones
+                self.period_from = vaction_days.period_from
+                self.period_to = vaction_days.period_to
+            elif r['code'] == 'VAC':
 
-        ###################### Actualizar Vacaciones para version 14 pendiente ###################
-        # iteramos sobre cada nomina
-        # current_year = datetime.datetime.now().year
-        # for r in res:
-        #     work_entry_id = r['work_entry_type_id']
-        #
-        #     entry = self.env['hr.work.entry.type'].search([('id', '=', work_entry_id)])
-        #     if entry.code == 'LEAVE120':
-        #         # Si el tipo de entrada tiene color amarillo
-        #         leave_type = self.env['hr.leave.type'].search([('color', '=', 3)])
-        #         vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
-        #                                                     ('holiday_status_id','=',leave_type[0].id),
-        #                                                     ('request_date_from','ilike', str(current_year)),
-        #                                                     ('state','=','validate')],limit=1)
-        #
-        #         total_vacaciones = vaction_days.number_of_days_display
-        #         r['number_of_days'] = total_vacaciones
+                leave_type = self.env['hr.leave.type'].search([('code', '=', 'VAC')])
+                vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
+                                                            ('holiday_status_id', '=', leave_type[0].id),
+                                                            ('request_date_from', 'ilike', año + "-" + mes),
+                                                            ('state', '=', 'validate')], limit=1)
+                r['number_of_days'] = vaction_days.number_of_days_display
+                self.period_from = vaction_days.period_from
+                self.period_to = vaction_days.period_to
 
         return res
 
 
-    @api.model
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        res = super(models.Model, self).fields_view_get(view_id, view_type, toolbar, submenu)
-        return res
+@api.model
+def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    res = super(models.Model, self).fields_view_get(view_id, view_type, toolbar, submenu)
+    return res
 
-    @api.model
-    def get_views(self, views, options=None):
-        res = super(models.Model, self).get_views(views, options)
-        return res
+
+@api.model
+def get_views(self, views, options=None):
+    res = super(models.Model, self).get_views(views, options)
+    return res
 
 
 class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
-
 
     tipo_nomina = fields.Selection([
         ('nomina_base', 'Nomina Base'),
@@ -249,5 +259,3 @@ class HrPayslipRun(models.Model):
         ('vacaciones', 'Vacaciones'),
     ], string='Tipo de Préstamo', default='nomina_base')
     recibo_id = fields.Many2one('rrhh.recibo', 'Formato de recibo', groups="hr.group_hr_user")
-
-

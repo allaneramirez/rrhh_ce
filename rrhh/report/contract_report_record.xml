@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="contr_report_record">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="margin-top:-15px">
+                        <style>
+                            body {
+                            font-family: sans-serif;
+                            line-height: 1.8;
+                            font-size: 16px;
+                            padding:50px
+                            text-align:justify
+                            }
+
+                        </style>
+                        <p style="text-align:start">A quien interese:
+                            <br/>
+                        </p>
+                        <br/>
+                        <p style="text-align:justify">
+                            De conformidad al artículo 87 del código de trabajo por este medio se hace constar que
+                            <span t-esc="o.employee_id.name" style="font-weight:bold"/>
+                            quien se identifica con Documento Personal
+                            de Identificación
+                            <span t-esc="o.employee_id.vecindad_dpi"/>
+                            laboró para Absorbentes de Centroamérica S.A desde el
+                            <span t-esc="formato_fecha(o.date_start)"/>
+                            al
+                            <span t-esc="formato_fecha(o.date_end)"/>
+                            desempeñando
+                            el cargo de<span t-esc="o.employee_id.job_id.name"/>. La finalización de la relación laboral
+                            se dio por
+                            voluntad patronal, el salario devengado fue el siguiente:
+                        </p>
+                        <table style="width: 100%; text-align:center; margin-top:30px; margin-bottom: 25px; font-size:14px">
+                            <tr>
+                                <td style="width: 25%; text-align:center">
+
+                                    <p style="font-weight:bold">Base</p>
+                                    <p>
+                                        <span t-esc="salario_formateado(o.wage)"/>
+                                    </p>
+                                </td>
+                                <td style="width: 25%;  text-align:center">
+
+                                    <p style="font-weight:bold">Decreto</p>
+
+                                    <p>
+                                        <span t-esc="salario_formateado(o.bonificacion)"/>
+                                    </p>
+
+                                </td>
+                                <td style="width: 25%;  text-align:center">
+
+                                    <p style="font-weight:bold; font-family: sans-serif">Total</p>
+
+                                    <p>
+                                        <span t-esc="salario_formateado(o.bonificacion+o.wage)"/>
+                                    </p>
+
+                                </td>
+                            </tr>
+                        </table>
+                        <p>
+                            A requerimiento de la interesada y para los usos convengan se extiende la presente
+                            CONSTANCIA LABORAL en el municipio de Villa Nueva, a
+                            <span t-esc="date_text()"/>
+                        </p>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <p>Atte.</p>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div style="width:100%; display:flex; text-align:center">
+                            <p>Lcda. Libny Paola González</p>
+                            <p>Jefa de RRHH</p>
+                            <p>Corporativo: 4212-4330</p>
+                        </div>
+
+
+                    </div>
+                </t>
+
+            </t>
+        </t>
+    </template>
+</odoo>

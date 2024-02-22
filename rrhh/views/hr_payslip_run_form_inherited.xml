@@ -1,0 +1,22 @@
+<odoo>
+    <record id="view_hr_payslip_run_form_custom" model="ir.ui.view">
+        <field name="name">hr.payslip.run.form.inherited</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="payroll.hr_payslip_run_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/label[@for='name' and @class='oe_edit_only']" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_payslips" class="oe_stat_button" icon="fa-book" type="object"
+                            help="Generated Payslips" attrs="{'invisible': [('payslip_count', '=', 0)]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="payslip_count"/>
+                            </span>
+                            <span class="o_stat_text">Payslips</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

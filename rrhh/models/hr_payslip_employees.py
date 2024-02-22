@@ -14,7 +14,8 @@ class HrPayslipEmployees(models.TransientModel):
     @api.onchange('department_id')
     def _onchange_department_id(self):
         if self.department_id:
-            employees = self.env['hr.employee'].search([('department_id', '=', self.department_id.id)])
+            department_ids = self.env['hr.department'].search([('id', 'child_of', self.department_id.id)]).ids
+            employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
             self.employee_ids = [(6, 0, employees.ids)]
         else:
             self.employee_ids = [(5,)]

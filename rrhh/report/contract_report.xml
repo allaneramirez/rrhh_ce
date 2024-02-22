@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="contr_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+
+
+                <div class="page" style="margin-top:-15px">
+                    <style>
+                        body {
+                        font-family: sans-serif;
+                        line-height: 1.6;
+                        font-size: 12.5px;
+                        margin: 0;
+                        padding-right: 20px;
+                        padding-left: 20px;
+                        }
+
+                        .page {
+                        margin: 0;
+                        padding: 0;
+                        }
+
+                    </style>
+                    <h3 style="text-align:center">
+                        CONTRATO INDIVIDUAL DE TRABAJO
+                    </h3>
+                    <p style="text-align:justify">Yo
+                        <span t-esc="o.employee_id.parent_id.name"/>
+                        de Profesión
+                        <span t-esc="o.employee_id.parent_id.profesion"/>
+                        de
+                        <span t-esc="a_letras(o.employee_id.parent_id.edad)"/>
+                        años de edad, sexo masculino,
+                        casado, guatemalteco con domicilio para recibir notificaciones en veintinueve calle tres guion
+                        sesenta y cinco Colonia El Carmen zona doce, y avecindado en la ciudad capital, me identifico
+                        con el Documento Personal de Identificación número mil quinientos setenta y nueve, cuarenta y
+                        nueve mil cuarenta y cuatro, cero ciento uno (1579 49044 0101) extendido en el Registro Nacional
+                        de las Personas de la ciudad de Guatemala, como Representante Legal de la empresa ABSORBENTES
+                        DE CENTROAMERICA, S.A ubicada en Km 21.5 Carretera CA-9 hacia la capital zona 10 Villa Nueva,
+                        Guatemala, por una parte y por la otra BRANDON MOISES PEREZ CHOCHON de veintidós años de edad,
+                        masculino, casado, guatemalteco, quien se identifica con el Documento Personal de Identificación
+                        tres mil cuarenta y nueve, cuarenta y nueve mil doscientos noventa y siete, cero ciento siete
+                        (3049 49297 0117) extendido en el Registro Nacional de las Personas RENAP, quienes para los
+                        efectos de este contrato se denominaran PATRONO Y TRABAJADOR, respectivamente, celebran el
+                        “EL CONTRATO INDIVIDUAL DE TRABAJO”, contenido en la siguientes cláusulas.
+                    </p>
+                    <p>1o. La relación de Trabajo inicia el:
+                        <span t-esc="fecha_a_letras(o.employee_id.contract_id.date_start)"/>
+                    </p>
+                    <p>2o. El trabajador prestará los servicios siguientes:
+                        <span t-esc="o.employee_id.job_id.name"/>
+                    </p>
+                    <p>3o. Los Servicios serán prestados en: ABSORBENTES DE CENTROAMERICA, S. A., Km. 21 carretera CA-9
+                        Hacia la capital, referencia puente Km. 22 zona 10 Villa Nueva, Guatemala.
+                    </p>
+                    <p>4o. La duración del presente contrato es:
+                        <span t-esc="'Indefinido' if o.employee_id.contract_id.tipo_contrato == 1 else 'Definido'"/>
+                    </p>
+                    <p>5o. <span t-esc="horarios(o.employee_id.contract_id.horario_contrato)"/></p>
+                    <p>6o. El salario será así:
+                        <span t-esc="salario_a_letras(o.employee_id.contract_id.wage)"/>
+                        (<span t-esc="salario_formateado(o.employee_id.contract_id.wage)"/>) mensuales de sueldo base
+                        más
+                        <span t-esc="salario_a_letras(o.employee_id.contract_id.bonificacion)"/>
+                        (<span t-esc="salario_formateado(o.employee_id.contract_id.bonificacion)"/>) bonificación de
+                        Ley, le será pagado mensualmente,
+                        por medio de depósitos a su cuenta a partir de la fecha suscrita en este contrato por lo cual el
+                        pago mensual será de
+                        <span t-esc="salario_a_letras(o.employee_id.contract_id.wage+o.employee_id.contract_id.bonificacion)"/>
+                        (
+                        <span t-esc="salario_formateado(o.employee_id.contract_id.bonificacion + o.employee_id.contract_id.wage)"/>
+                        )
+                    </p>
+                    <p>7o. Las horas extras, cuando sean requeridas, el séptimo día y los días de asueto, le serán
+                        pagados de conformidad con los artículos 121, 126 y 127 del Código de Trabajo.
+                    </p>
+                    <p>8o. Es entendido que de conformidad con el artículo 122 del Código de Trabajo, la jornada
+                        ordinaria
+                        y extraordinaria no puede exceder de una suma total de 12 horas diarias.
+                    </p>
+                    <p>9o. El presente contrato se suscribe en: Guatemala, Villa nueva,
+                        <span t-esc="fecha_a_letras(o.employee_id.contract_id.fecha_firma)"/>
+                    </p>
+                    <p>OBSERVACIONES: Me doy por enterado de que de manera voluntaria se trabaja el tiempo
+                        extraordinario
+                        en caso de necesidad de la entidad en cualquier otra actividad, turno o departamento que se me
+                        encomiende efectuar. Se hace constar que las ventajas económicas no deben exceder del 30%
+                        según artículo 90 del Código de Trabajo. Acepto expresamente que las anteriores observaciones
+                        son condiciones para iniciar mi relación laboral.
+                    </p>
+
+                    <table style="width: 100%; text-align:center; margin-top:60px; margin-bottom: 25px; font-size:12px">
+                        <tr>
+                            <td style="width: 50%;">
+
+                                <p>f._____________________________________</p>
+                                <p>JUAN JOSÉ FERNANDO LIRA REYNA</p>
+                            </td>
+                            <td style="width: 50%;">
+
+                                <p>f._____________________________________</p>
+                                <p>
+                                    <span t-esc="o.employee_id.name"/>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <p style="font-size:10px; text-align:justify">DATOS IMPORTANTES: 1) El contrato individual de
+                        trabajo debe suscribirse el mismo
+                        día en que se inicia la relación de trabajo y enviarse dentro de los 15 días hábiles
+                        al Registro electrónico de contratos, cuando haya modificación o renovación del
+                        contrato, deberá procederse en igual forma, (artículo 28 del Código de Trabajo). 2)
+                        Si por la naturaleza de las labores de la empresa es de aquellas comprendidas en el
+                        artículo 128 del Código de Trabajo, debe pactarse lo relativo al trabajo en días de
+                        asueto y solicitarse la autorización respectiva a la Inspección General de Trabajo. 3)
+                        En la cláusula 2a.del contrato especificarse en la forma más detallada posible los
+                        servicios que el trabajador se obliga a prestar para mayor claridad y seguridad de las
+                        partes. 4) En las OBSERVACIONES, se deben consignar todas aquellas particularidades a
+                        que está sujeto el contrato que no están incluidas en el formato y que formen parte del
+                        mismo, tales como prestaciones, obligaciones y derechos de deriven del Reglamento Interno
+                        de Trabajo o Pacto Colectivo de Condiciones de Trabajo, jornadas extraordinarias de trabajo,
+                        aprendizaje, sueldos diferidos, aguinaldos, prestaciones en especie, (habitación, manutención,
+                        víveres, etc.) y cualquiera otras que se pacten. 5) El contrato debe mantenerse a disposición
+                        de las autoridades de Trabajo, en cualquier revisión que se practique y deberá llevar la
+                        autorización
+                    </p>
+                </div>
+
+
+            </t>
+        </t>
+    </template>
+</odoo>

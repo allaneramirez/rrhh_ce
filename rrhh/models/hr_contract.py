@@ -11,9 +11,11 @@ class Contract(models.Model):
         ('despido', 'Despido'),
         ('despido_justificado', 'Despido Justificado'),
         ], 'Motivo de terminacion')
+    fecha_firma = fields.Date('Fecha de Firma del contrato')
     base_extra = fields.Monetary('Base Extra', digits=(16,2), track_visibility='onchange')
     wage = fields.Monetary('Wage', digits=(16, 2), required=True, help="Employee's monthly gross wage.",track_visibility='onchange')
     fecha_reinicio_labores = fields.Date('Fecha de reinicio labores')
+    horario_contrato = fields.Many2many('resource.calendar',string="Horarios de Contrato")
     temporalidad_contrato = fields.Char('Temporalidad del contrato')
     tipo_contrato = fields.Char('Tipo del contrato')
     calcula_indemnizacion = fields.Boolean('Calcula indemnizacion')

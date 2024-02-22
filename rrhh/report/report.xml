@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_contract" model="ir.actions.report">
+        <field name="name">Contrato del empleado</field>
+        <field name="model">hr.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rrhh.contr_report</field>
+        <field name="report_file">rrhh.contr_report</field>
+        <field name="binding_model_id" ref="model_hr_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_contract_fire" model="ir.actions.report">
+        <field name="name">Carta de despido</field>
+        <field name="model">hr.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rrhh.contr_report_fire</field>
+        <field name="report_file">rrhh.contr_report_fire</field>
+        <field name="binding_model_id" ref="model_hr_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_contract_record" model="ir.actions.report">
+        <field name="name">Constancia laboral</field>
+        <field name="model">hr.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rrhh.contr_report_record</field>
+        <field name="report_file">rrhh.contr_report_record</field>
+        <field name="binding_model_id" ref="model_hr_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_vacations" model="ir.actions.report">
+        <field name="name">Constancia Vacaciones</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rrhh.vac_report</field>
+        <field name="report_file">rrhh.vac_report</field>
+        <field name="binding_model_id" ref="model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

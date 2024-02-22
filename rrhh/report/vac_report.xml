@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="vac_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="data_report_dpi" t-value="110"/>
+                    <div class="page" style="margin-top:-15px" t-attf-class="page size-letter">
+                        <style>
+                            body {
+                            font-family: sans-serif;
+                            font-size:18px
+                            }
+                        </style>
+
+                        <h4 style="text-align: center; padding-bottom:75px;">CONSTANCIA DE VACACIONES
+                            REMUNERADO
+                        </h4>
+
+                        <p style="text-align: justify;">
+                            Yo <span t-field="o.employee_id.name" style="font-family: 'sans-serif'; font-weight:bold"/>,
+                            hago constar que he recibido un pago por
+                            el monto de
+                            <t t-foreach="o.line_ids" t-as="i">
+                                <t t-set="dias" t-value="0.0"/>
+                                <t t-if="i.salary_rule_id.code == 'VAC'">
+                                    <t t-set="dias" t-value="salario_formateado(i.total)"/>
+                                    <span t-esc="dias"/>
+                                </t>
+                            </t>
+                            correspondiente a vacaciones del período <span t-field="o.period_from"/>-
+                            <span t-field="o.period_to"/>
+                            por un total de
+                            <t t-foreach="o.worked_days_line_ids" t-as="i">
+                                <t t-set="dias" t-value="0.0"/>
+                                <t t-if="i.code == 'VAC'">
+                                    <t t-set="dias" t-value="int(i.number_of_days)"/>
+                                    <span t-esc="dias"/>
+                                </t>
+                            </t>
+
+                            días hábiles, por causas personales solicité me fuera autorizado lo mencionado.
+
+                        </p>
+
+
+                        <p style="text-align: justify;">
+                            Estoy enterado de lo enunciado en el artículo 133 del código de trabajo el cual
+                            expresa
+                            “Las vacaciones no son compensables en dinero, salvo cuando el trabajador que
+                            haya
+                            adquirido el derecho a gozarlas no las haya disfrutado por cesar en su trabajo
+                            cualquiera que sea la causa”
+                        </p>
+
+                        <p style="text-align: justify;">
+                            Para los usos legales que correspondan a Absorbentes de Centroamérica, extiendo
+                            la
+                            presente constancia que son los días de vacaciones correspondientes a los cuales
+                            tengo
+                            derecho.
+                        </p>
+
+                        <p style="text-align: justify;">
+                            En virtud a lo anterior firmo acepto y tengo por bien recibido el pago de la
+                            prestación
+                            por razón de vacaciones otorgado por Absorbentes de Centroamérica S.A, por lo
+                            cual
+                            no tengo ninguna reclamación a futuro en contra de Absorbentes de Centroamérica
+                            S.A.
+                        </p>
+                        <table style="width: 100%; text-align:center; margin-top:120px;  font-size:14px">
+                            <tr>
+
+                                <td style="width: 50%;">
+
+                                    <p>f._____________________________________</p>
+                                    <span t-esc="o.employee_id.name.title()"/>
+                                    <p style="font-family:'sans-serif'; font-weight:bold;">Empleado</p>
+                                </td>
+
+
+                                <td style="width: 50%;">
+
+                                    <p>f._____________________________________</p>
+                                    <p>
+                                        <span>Ing. René Díaz</span>
+                                        <p style="font-family:'sans-serif'; font-weight:bold;">Gerente General
+                                        </p>
+                                    </p>
+                                </td>
+
+                            </tr>
+                        </table>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+
+    </template>
+</odoo>

@@ -14,7 +14,8 @@ class rrhh_inputs_wizard(models.TransientModel):
     def create_inputs(self):
         active_batch_id = self.env.context.get('active_id')
 
-        print(active_batch_id,"barch")
+        hr_payslip_run = self.env['hr.payslip.run'].search(
+            [('id', '=', active_batch_id)])
         # Read the Excel file
         try:
             workbook = xlrd.open_workbook(file_contents=base64.b64decode(self.files))
@@ -23,42 +24,43 @@ class rrhh_inputs_wizard(models.TransientModel):
         Sheet_name = workbook.sheet_names()
         sheet = workbook.sheet_by_name(Sheet_name[0])
 
+        # Eliminando previos inputs
+        for pay in hr_payslip_run.slip_ids:
+            pay.input_line_ids.unlink()
         # Iterate over each row in the Excel file and create hr.payslip.input records
         for row_index in range(1, sheet.nrows):  # Assuming the first row contains headers
-            employee_name = sheet.cell_value(row_index, 0)
-            entry_name = sheet.cell_value(row_index, 1)
-            amount = sheet.cell_value(row_index, 2)
-            hr_payslip_input_type = self.env['hr.payslip.input.type.2'].search([('code','=',sheet.cell(row_index, 1).value)])
+            for col_index in range(1, sheet.ncols):
+                employee_name = sheet.cell_value(row_index, 0)
+                entry_code = sheet.cell_value(0, col_index)
+                amount = sheet.cell_value(row_index, col_index)
 
-            if not employee_name:
-                raise ValidationError(_(
-                    "Empleado no encontrado: %s" % (sheet.cell(row_index, 0).value)
-                ))
+                hr_payslip_input_type = self.env['hr.payslip.input.type.2'].search([('code','=',entry_code)])
 
-            if not hr_payslip_input_type:
-                raise ValidationError(_(
-                    "Nombre no encontrado para %s" % (sheet.cell(row_index, 1).value)
-                ))
+                if not hr_payslip_input_type:
+                    raise ValidationError(_(
+                        "Codigo de entrada no encontrado: %s" % (sheet.cell(0, col_index).value)
+                    ))
 
-            # if not amount:
-            #     raise ValidationError(_(
-            #         "Amount value is require %s" % (sheet.cell(row_index, 2).value)
-            #     ))
+                if not employee_name:
+                    raise ValidationError(_(
+                        "Empleado no encontrado: %s" % (sheet.cell(row_index, 0).value)
+                    ))
 
-            # Find the payslip for the employee (customize this query based on your actual model structure)
-            payslip = self.env['hr.payslip'].search(
-                [('employee_id.name', '=', employee_name), ('payslip_run_id', '=', active_batch_id)], limit=1)
-            print(payslip.contract_id,"contract!!")
-            if payslip:
-                # Create hr.payslip.input record
-                input_vals = {
-                    'payslip_id': payslip.id,
-                    'input_type_id': hr_payslip_input_type.id,
-                    'amount': amount,
-                    'name': entry_name,
-                    'code': hr_payslip_input_type.code,
-                    'contract_id': payslip.contract_id[0].id
-                }
-                self.env['hr.payslip.input'].create(input_vals)
+
+                # Find the payslip for the employee (customize this query based on your actual model structure)
+                payslip = self.env['hr.payslip'].search(
+                    [('employee_id.name', '=', employee_name), ('payslip_run_id', '=', active_batch_id)], limit=1)
+
+                if payslip:
+                    # Create hr.payslip.input record
+                    input_vals = {
+                        'payslip_id': payslip.id,
+                        'input_type_id': hr_payslip_input_type.id,
+                        'amount': amount,
+                        'name': entry_code,
+                        'code': entry_code,
+                        'contract_id': payslip.contract_id[0].id
+                    }
+                    self.env['hr.payslip.input'].create(input_vals)
         return {'type': 'ir.actions.act_window_close'}
 

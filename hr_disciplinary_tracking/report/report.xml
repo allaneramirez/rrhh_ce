@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_disciplinary" model="ir.actions.report">
+        <field name="name">Llamado de atención</field>
+        <field name="model">disciplinary.action</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_disciplinary_tracking.dis_report</field>
+        <field name="report_file">hr_disciplinary_tracking.dis_report</field>
+        <field name="binding_model_id" ref="model_disciplinary_action"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>
