@@ -27,6 +27,7 @@
         'views/recibo.xml',
         'views/hr_payslip_view.xml',
         'views/hr_leaves_view.xml',
+        'views/res_company_views.xml',
         'report/contract_report.xml',
         'report/contract_report_fire.xml',
         'report/contract_report_record.xml',

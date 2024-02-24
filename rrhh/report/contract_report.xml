@@ -2,10 +2,10 @@
 <odoo>
     <template id="contr_report">
         <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="15"/>
+             <t t-set="data_report_dpi" t-value="110"/>
             <t t-foreach="docs" t-as="o">
-
-
-                <div class="page" style="margin-top:-15px">
+                <div class="page" style="margin-top:-15px;">
                     <style>
                         body {
                         font-family: sans-serif;
@@ -17,33 +17,38 @@
                         }
 
                         .page {
-                        margin: 0;
-                        padding: 0;
+                            margin: 0;
+                            padding: 0;
+
                         }
 
+
+
                     </style>
-                    <h3 style="text-align:center">
+                    <h3 style="text-align:center;">
                         CONTRATO INDIVIDUAL DE TRABAJO
                     </h3>
                     <p style="text-align:justify">Yo
-                        <span t-esc="o.employee_id.parent_id.name"/>
+                        <span t-esc="o.employee_id.hr_responsible_id.name"/>
                         de Profesión
-                        <span t-esc="o.employee_id.parent_id.profesion"/>
+                        <span t-esc="o.employee_id.hr_responsible_id.profesion"/>
                         de
-                        <span t-esc="a_letras(o.employee_id.parent_id.edad)"/>
+                        <span t-esc="a_letras(o.employee_id.hr_responsible_id.edad)"/>
                         años de edad, sexo masculino,
                         casado, guatemalteco con domicilio para recibir notificaciones en veintinueve calle tres guion
                         sesenta y cinco Colonia El Carmen zona doce, y avecindado en la ciudad capital, me identifico
                         con el Documento Personal de Identificación número mil quinientos setenta y nueve, cuarenta y
-                        nueve mil cuarenta y cuatro, cero ciento uno (1579 49044 0101) extendido en el Registro Nacional
-                        de las Personas de la ciudad de Guatemala, como Representante Legal de la empresa ABSORBENTES
+                        nueve mil cuarenta y cuatro, cero ciento uno <span style="font-weight:bold">(1579 49044 0101)</span> extendido en el Registro Nacional
+                        de las Personas de la ciudad de Guatemala, como Representante Legal de la empresa <span style="font-weight:bold"></span> ABSORBENTES
                         DE CENTROAMERICA, S.A ubicada en Km 21.5 Carretera CA-9 hacia la capital zona 10 Villa Nueva,
-                        Guatemala, por una parte y por la otra BRANDON MOISES PEREZ CHOCHON de veintidós años de edad,
-                        masculino, casado, guatemalteco, quien se identifica con el Documento Personal de Identificación
-                        tres mil cuarenta y nueve, cuarenta y nueve mil doscientos noventa y siete, cero ciento siete
-                        (3049 49297 0117) extendido en el Registro Nacional de las Personas RENAP, quienes para los
-                        efectos de este contrato se denominaran PATRONO Y TRABAJADOR, respectivamente, celebran el
-                        “EL CONTRATO INDIVIDUAL DE TRABAJO”, contenido en la siguientes cláusulas.
+                        Guatemala, por una parte y por la otra <span t-esc="o.employee_id.name" style="font-weight:bold"/> de
+                        <span t-esc="a_letras(o.employee_id.edad)"/> años de edad,
+                        <span t-esc=" masculino  if o.employee_id.gender == male else femenino"/>, <span t-esc="soltero if o.employee_id.marital == single else casado"/>,
+                        <span t-esc=" guatemalteco  if o.employee_id.gender == male else guatemalteca"/>,
+                        quien se identifica con el Documento Personal de Identificación
+                        <span t-esc="o.employee_id.vecindad_dpi" style="font-weight"/> extendido en el Registro Nacional de las Personas RENAP, quienes para los
+                        efectos de este contrato se denominaran <span style="font-weight:bold">PATRONO Y TRABAJADOR</span> , respectivamente, celebran el
+                        <span style="font-weight:bold">“EL CONTRATO INDIVIDUAL DE TRABAJO”</span>, contenido en la siguientes cláusulas.
                     </p>
                     <p>1o. La relación de Trabajo inicia el:
                         <span t-esc="fecha_a_letras(o.employee_id.contract_id.date_start)"/>
@@ -90,7 +95,7 @@
                         son condiciones para iniciar mi relación laboral.
                     </p>
 
-                    <table style="width: 100%; text-align:center; margin-top:60px; margin-bottom: 25px; font-size:12px">
+                    <table style="width: 100%; text-align:center; margin-top:60px; margin-bottom: 20px; font-size:12px">
                         <tr>
                             <td style="width: 50%;">
 
@@ -106,7 +111,7 @@
                             </td>
                         </tr>
                     </table>
-                    <p style="font-size:10px; text-align:justify">DATOS IMPORTANTES: 1) El contrato individual de
+                    <p style="font-size:12px; text-align:justify">DATOS IMPORTANTES: 1) El contrato individual de
                         trabajo debe suscribirse el mismo
                         día en que se inicia la relación de trabajo y enviarse dentro de los 15 días hábiles
                         al Registro electrónico de contratos, cuando haya modificación o renovación del

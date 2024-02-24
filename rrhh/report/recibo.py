@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import locale
+
 from odoo import api, models, fields
 from datetime import datetime
 
@@ -71,8 +71,6 @@ class ReportRecibo(models.AbstractModel):
         return result
     def formato_fecha(self, fecha):
         if fecha:
-            # Configurar la localización a español
-            locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
 
             # Obtener el nombre del mes y formatear la fecha
             return fecha.strftime('%d de %B de %Y')

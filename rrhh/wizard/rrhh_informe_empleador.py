@@ -200,7 +200,7 @@ class rrhh_informe_empleador(models.TransientModel):
         anio_inicio_contrato = int(empleado_id.contract_id.date_start.year)
         # AÑO MES Y DIA DEL PRIMERO DE ENERO
         anio_inicio = datetime.strptime(str(anio) + '-01' + '-01', '%Y-%m-%d').date().strftime('%Y-%m-%d')
-        # AÑO MES Y DIA DEL PRIMERO DE DICIEMBRE
+        # AÑO MES Y DIA DEL 31 DE DICIEMBRE
         anio_fin = datetime.strptime(str(anio) + '-12' + '-31', '%Y-%m-%d').date().strftime('%Y-%m-%d')
         dias_laborados = 0
         empleado = self.env['hr.employee'].browse(empleado_id.id)
@@ -281,6 +281,7 @@ class rrhh_informe_empleador(models.TransientModel):
                 'border': 1
             })
             hoja_empleado.set_column('A:AT', 20)
+            hoja_empleado.set_row(0, 40)
 
 
             hoja_empleado.write(0, 0, 'Numero de empleado',header_format)
@@ -352,6 +353,8 @@ class rrhh_informe_empleador(models.TransientModel):
                     aguinaldo = 0
                     bono = 0
                     bonificaciones_adicionales = 0
+                    indemnizacion = 0
+
                     valor_horas_extras = 0
                     retribucion_comisiones = 0
                     viaticos = 0
@@ -359,8 +362,8 @@ class rrhh_informe_empleador(models.TransientModel):
                     bonificacion_decreto = 0
                     precision_currency = empleado.company_id.currency_id
                     # calcula indemnizacion si el contrato tiene fecha de finalización
-                    indemnizacion = precision_currency.round(self._get_indemnizacion(empleado.id)) if \
-                    empleado.contract_ids[0].date_end else 0
+                    # indemnizacion = precision_currency.round(self._get_indemnizacion(empleado.id)) if \
+                    # empleado.contract_ids[0].date_end else 0
                     salario_anual_nominal_promedio = 0
                     nominas = {}
                     numero_horas_extra = 0
@@ -410,7 +413,10 @@ class rrhh_informe_empleador(models.TransientModel):
                                     retribucion_vacaciones += linea.total
                                 if linea.salary_rule_id.id in nomina.company_id.bonificaciones_adicionales_ids.ids:
                                     bonificaciones_adicionales += linea.total
-                                    # SUMA LA BONIFICACION DECRETO EN EL SALARIO DEL MES
+                                if linea.salary_rule_id.id in nomina.company_id.indemnizacion_ids.ids:
+                                    indemnizacion += linea.total
+
+                                    # SUMA LA BONIFICACION DECRETO EN EL SALARIO DEL MES PERO UNICAMENTE HAY QUE PONER 250
                                 if linea.salary_rule_id.id in nomina.company_id.decreto_ids.ids:
                                     bonificacion_decreto += linea.total
                                     if nomina_mes not in nominas:

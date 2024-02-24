@@ -35,7 +35,7 @@
              'views/disciplinary_sequence.xml',
              'views/category_view.xml',
              'report/report.xml',
-             'report/contract_report.xml',
+             'report/dis_report.xml',
              'security/ir.model.access.csv',
              'security/security.xml'],
     'demo': ['data/demo_data.xml'],

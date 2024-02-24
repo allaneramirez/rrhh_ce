@@ -78,12 +78,11 @@ class res_company(models.Model):
     fija_ids = fields.Many2many('hr.salary.rule','rrhh_fija_rel', string="Fija")
     variable_ids = fields.Many2many('hr.salary.rule','rrhh_variable_rel', string="Variable")
     salario_promedio_ids = fields.Many2many('hr.salary.rule','rrhh_salario_promedio_rel', string="Salario promedio")
-    numero_horas_extras_ids = fields.Many2many('hr.payslip.input.type','rrhh_num_horas_extras_rel', string='Numero horas extras')
+    numero_horas_extras_ids = fields.Many2many('hr.payslip.input.type.2', string='Numero horas extras')
     centro_trabajo_ids = fields.One2many('res.company.centro_trabajo','company_id',string="Centros de trabajo")
     otro_salario_ids = fields.Many2many('hr.salary.rule','rrhh_otro_salario_rel',string='Otros salarios')
     boni_incentivo_decreto_ids = fields.Many2many('hr.salary.rule','rrhh_boni_incentivo_decreto_rel',string='Bonificacion incentivo decreto')
     devolucion_isr_otro_ids = fields.Many2many('hr.salary.rule','rrhh_dev_isr_otro_rel',string='Devolución ISR')
-
 class res_company_centro_trabajo(models.Model):
     _name = 'res.company.centro_trabajo'
     _description = 'Centro de trabajo'

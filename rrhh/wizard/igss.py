@@ -113,10 +113,9 @@ class rrhh_igss_wizard(models.TransientModel):
 
                     if ausencias:
                         # OBTENEMOS EL CODIGO POR CADA REGLA CONFIUGRADA EN LA COMPANIA RELACIONADA AL IGGS
-                        reglas = [x.code for x in slip.employee_id.company_id.igss_ids]
                         for ausencia in ausencias:
                             # SI EL CODIGO DE LA AUSENCIA ES DE TIPO IGGS
-                            if ausencia.holiday_status_id.work_entry_type_id.code in reglas:
+                            if ausencia.holiday_status_id.work_entry_type_id.code == 'VAC':
                                 fecha_inicio = str(datetime.strptime(str(ausencia.date_from),'%Y-%m-%d %H:%M:%S').date().strftime('%d/%m/%Y'))
                                 fecha_fin = str(datetime.strptime(str(ausencia.date_to),'%Y-%m-%d %H:%M:%S').date().strftime('%d/%m/%Y'))
                                 suspensiones.append(numero_liquidacion + '|' + numero_afiliado + '|' + primer_nombre + '|' + segundo_nombre + '|' + primer_apellido + '|' + segundo_apellido + '|' + apellido_casada + '|' + fecha_inicio + '|' + fecha_fin + '|' + '\r\n')

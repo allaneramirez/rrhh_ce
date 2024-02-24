@@ -206,32 +206,31 @@ class HrPayslip(models.Model):
 
     def _compute_leave_days(self, contract, day_from, day_to):
         res = super(HrPayslip, self)._compute_leave_days(contract, day_from, day_to)
-        print(self.date_from, "formmm", self)
-        # if self.date_from:
-        año, mes, _ = str(self.date_from).split("-")
-        for r in res:
-            if r['code'] == 'VAC' and self.struct_id.name == "1era Quincena":
-                # Buscamos el tipo de entrada por el codigo para buscar la ausencia
-                leave_type = self.env['hr.leave.type'].search([('code', '=', 'VAC')])
-                vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
-                                                            ('holiday_status_id', '=', leave_type[0].id),
-                                                            ('request_date_from', 'ilike', año + "-" + mes),
-                                                            ('state', '=', 'validate')], limit=1)
+        if self.date_from:
+            año, mes, _ = str(self.date_from).split("-")
+            for r in res:
+                if r['code'] == 'VAC' and self.struct_id.name == "1era Quincena":
+                    # Buscamos el tipo de entrada por el codigo para buscar la ausencia
+                    leave_type = self.env['hr.leave.type'].search([('code', '=', 'VAC')])
+                    vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
+                                                                ('holiday_status_id', '=', leave_type[0].id),
+                                                                ('request_date_from', 'ilike', año + "-" + mes),
+                                                                ('state', '=', 'validate')], limit=1)
 
-                total_vacaciones = vaction_days.number_of_days_display
-                r['number_of_days'] = total_vacaciones
-                self.period_from = vaction_days.period_from
-                self.period_to = vaction_days.period_to
-            elif r['code'] == 'VAC':
+                    total_vacaciones = vaction_days.number_of_days_display
+                    r['number_of_days'] = total_vacaciones
+                    self.period_from = vaction_days.period_from
+                    self.period_to = vaction_days.period_to
+                elif r['code'] == 'VAC':
 
-                leave_type = self.env['hr.leave.type'].search([('code', '=', 'VAC')])
-                vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
-                                                            ('holiday_status_id', '=', leave_type[0].id),
-                                                            ('request_date_from', 'ilike', año + "-" + mes),
-                                                            ('state', '=', 'validate')], limit=1)
-                r['number_of_days'] = vaction_days.number_of_days_display
-                self.period_from = vaction_days.period_from
-                self.period_to = vaction_days.period_to
+                    leave_type = self.env['hr.leave.type'].search([('code', '=', 'VAC')])
+                    vaction_days = self.env['hr.leave'].search([('employee_id', '=', self.employee_id[0].id),
+                                                                ('holiday_status_id', '=', leave_type[0].id),
+                                                                ('request_date_from', 'ilike', año + "-" + mes),
+                                                                ('state', '=', 'validate')], limit=1)
+                    r['number_of_days'] = vaction_days.number_of_days_display
+                    self.period_from = vaction_days.period_from
+                    self.period_to = vaction_days.period_to
 
         return res
 

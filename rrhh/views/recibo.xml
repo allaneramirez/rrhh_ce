@@ -10,14 +10,14 @@
                     body {
                     font-family: 'Arial', sans-serif;
                     line-height: 1;
-                    font-size: 15px;
+                    font-size: 14px;
                     color: #333;
                     }
 
                     table {
                     width: 100%;
                     border-collapse: collapse;
-                    margin-top: 12px;
+                    margin-top: 8px;
                     font-size: 14px;
                     }
 
@@ -37,7 +37,7 @@
                     align-items: center;
                     justify-content: space-between;
                     width: 100%;
-                    margin-top:100px
+                    margin-top:75px
                     }
 
                     .logo img {
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                             <table class="table table-sm table-condensed"
-                                   style="width:100%;margin-top:20px; font-size:18px;">
+                                   style="width:100%;margin-top:15px; font-size:14px;">
                                 <tr>
                                     <td>
                                         <strong>Nombre del Empleado:</strong>
@@ -180,7 +180,7 @@
                             </table>
                             <br/>
                             <!--                        ################## Ingresos y Deducciones ################# -->
-                            <div class="row" style="width:100%;margin-top:20px; font-size:18px;">
+                            <div class="row" style="width:100%;margin-top:20px; font-size:14px;">
                                 <!--                            <span t-set="detail" t-value="o.get_payslip_data()"/>-->
                                 <!--                            <span t-set="total_line_data" t-value="o.get_payslip_data(flag=1)"/>-->
                                 <table>
@@ -231,10 +231,10 @@
                                         <th></th>
                                         <th></th>
                                         <th class="text-left"
-                                            style=" text-transform: uppercase; font-size: 18px;">
+                                            style=" text-transform: uppercase; font-size: 15px;">
                                             Líquido a recibir:
                                         </th>
-                                        <th style="font-size: 18px;">
+                                        <th style="font-size: 15px;">
                                             <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]"
                                                   t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                         </th>
@@ -273,7 +273,7 @@
                                 </div>
                             </div>
                             <table class="table table-sm table-condensed"
-                                   style="width:100%;margin-top:20px; font-size:18px;">
+                                   style="width:100%;margin-top:10px; font-size:14px;">
                                 <tr>
                                     <td>
                                         <strong>Nombre del Empleado:</strong>
@@ -362,7 +362,7 @@
                             </table>
                             <br/>
                             <!--                        ################## Ingresos y Deducciones ################# -->
-                            <div class="row" style="width:100%;margin-top:20px; font-size:18px;">
+                            <div class="row" style="width:100%;margin-top:20px; font-size:14px;">
                                 <!--                            <span t-set="detail" t-value="o.get_payslip_data()"/>-->
                                 <!--                            <span t-set="total_line_data" t-value="o.get_payslip_data(flag=1)"/>-->
                                 <table>
@@ -413,10 +413,10 @@
                                         <th></th>
                                         <th></th>
                                         <th class="text-left"
-                                            style=" text-transform: uppercase; font-size: 18px;">
+                                            style=" text-transform: uppercase; font-size: 15px;">
                                             Líquido a recibir:
                                         </th>
-                                        <th style="font-size: 18px;">
+                                        <th style="font-size: 15px;">
                                             <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]"
                                                   t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/>
                                         </th>
