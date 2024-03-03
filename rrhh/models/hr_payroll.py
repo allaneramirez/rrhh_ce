@@ -23,6 +23,9 @@ class HrPayslip(models.Model):
     net_wage = fields.Float(compute='_compute_basic_net', store=True)
     period_from = fields.Char()
     period_to = fields.Char()
+    leave_allocation_id = fields.Many2one('hr.leave.allocation', string='Asignación de Ausencia')
+    dias_vacaciones = fields.Integer(string='Dias de vacaciones a pagar')
+    leave_id = fields.Many2one('hr.leave', string='Ausencia Relacionada')
 
     @api.depends('line_ids.total')
     def _compute_basic_net(self):
@@ -145,7 +148,6 @@ class HrPayslip(models.Model):
     def quin_descount(self, employee_id, payslip):
         employee = self.env['hr.employee'].browse(employee_id)
         payslip_obj = self.env['hr.payslip']
-        print(payslip)
 
         # # Busca la nómina de la 1era Quincena del mes de la nomina de la 2Q
         previous_payslip = payslip_obj.search([
@@ -154,7 +156,7 @@ class HrPayslip(models.Model):
             ('date_to', 'like', payslip.strftime('%Y-%m')),
             ('state', 'in', ['done', 'paid'])
         ], limit=1)
-        print(previous_payslip, "previus!~~")
+
         if previous_payslip:
             result = previous_payslip[0].net_wage
         else:
@@ -203,6 +205,48 @@ class HrPayslip(models.Model):
                     if input.code.startswith("DL"):
                         total_input += input.amount
                 return total_input
+    def compute_sheet(self):
+        res = super(HrPayslip, self).compute_sheet()
+        if self.leave_id:
+            entry_code = 'VACREZ'
+            self.leave_id.unlink()
+            old_input = self.input_line_ids.filtered(lambda input: input.code == entry_code)
+            old_input.unlink() if old_input else None
+            leave = self.env['hr.leave'].create({
+                'name': self.leave_allocation_id.name,
+                'employee_id': self.employee_id.id,
+                'holiday_status_id': self.leave_allocation_id.holiday_status_id.id,
+                'request_date_from': self.date_from,
+                'request_date_to': self.date_to,
+                'number_of_days': self.dias_vacaciones
+                # Añade otros campos según sea necesario
+            })
+            self.leave_id = leave.id
+
+            hr_payslip_input_type = self.env['hr.payslip.input.type.2'].search([('code', '=', entry_code)])
+            input_vals = {
+                'payslip_id': self.id,
+                'input_type_id': hr_payslip_input_type.id,
+                'amount': self.dias_vacaciones,
+                'name': 'Vacaciones Rezagadas',
+                'code': entry_code,
+                'contract_id': self.contract_id[0].id
+            }
+            self.env['hr.payslip.input'].create(input_vals)
+        return res
+
+    def action_payslip_done(self):
+        res = super(HrPayslip, self).action_payslip_done()
+        if self.leave_id:
+            self.leave_id.action_approve()
+        return res
+
+    def action_payslip_draft(self):
+        res = super(HrPayslip, self).action_payslip_draft()
+        if self.leave_id:
+            self.leave_id.action_refuse()
+            self.leave_id.action_draft()
+        return res
 
     def _compute_leave_days(self, contract, day_from, day_to):
         res = super(HrPayslip, self)._compute_leave_days(contract, day_from, day_to)
@@ -233,7 +277,6 @@ class HrPayslip(models.Model):
                     self.period_to = vaction_days.period_to
 
         return res
-
 
 @api.model
 def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):

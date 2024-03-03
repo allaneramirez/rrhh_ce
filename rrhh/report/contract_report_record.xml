@@ -21,7 +21,7 @@
                         <br/>
                         <p style="text-align:justify">
                             De conformidad al artículo 87 del código de trabajo por este medio se hace constar que
-                            <span t-esc="o.employee_id.name" style="font-weight:bold"/>
+                            &#160;<span t-esc="o.employee_id.name" style="font-weight:bold"/>
                             quien se identifica con Documento Personal
                             de Identificación
                             <span t-esc="o.employee_id.vecindad_dpi"/>
@@ -30,7 +30,7 @@
                             al
                             <span t-esc="formato_fecha(o.date_end)"/>
                             desempeñando
-                            el cargo de<span t-esc="o.employee_id.job_id.name"/>. La finalización de la relación laboral
+                            el cargo de <span t-esc="o.employee_id.job_id.name"/>. La finalización de la relación laboral
                             se dio por
                             voluntad patronal, el salario devengado fue el siguiente:
                         </p>

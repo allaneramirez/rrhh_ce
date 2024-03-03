@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Loan Tree view-->
+    <record id="hr_loan_type_tree_view" model="ir.ui.view">
+        <field name="name">hr.loan.type.tree</field>
+        <field name="model">hr.loan.type</field>
+        <field name="arch" type="xml">
+            <tree string="Loan Type">
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Loan Form view-->
+    <record id="hr_loan_type_form_view" model="ir.ui.view">
+        <field name="name">hr.loan.type.form</field>
+        <field name="model">hr.loan.type</field>
+        <field name="arch" type="xml">
+            <form string="Loan Type">
+
+                <group>
+                    <field name="name"/>
+                    <field name="code"/>
+                </group>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_hr_loan_type" model="ir.actions.act_window">
+        <field name="name">Tipo de Prestamo</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.loan.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem name="Tipo de Prestamo"
+              parent="menu_base_hr_loan_request"
+              id="menu_hr_loan_type_request"
+              action="action_hr_loan_type"/>
+
+
+</odoo>

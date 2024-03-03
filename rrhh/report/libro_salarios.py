@@ -281,6 +281,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     # Salario (segun reglas salariales configuradas)
                     'ordinario': ordinario,
                     'extra_ordinario': extra_ordinario,
+                    'otros_salarios': otros_salarios,
                     'septimos_asuetos': septimos_asuetos,
                     'vacaciones': vacaciones,
                     'total_salario_devengado': total_salario_devengado,
@@ -299,7 +300,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     # 'variable': variable,
                     'dev_isr_otro': dev_isr_otro,
                     'bono_agui_indem': bono_agui_indem,
-                    'otros_salarios': otros_salarios,
+
                     # 'liquido_recibir': total_salario_devengado + boni_incentivo_decreto +dev_isr_otro
                     'liquido_recibir': total_salario_devengado + total_deducciones +bono_agui_indem+ boni_incentivo_decreto + dev_isr_otro
                     # 'liquido_recibir': total_salario_devengado + total_deducciones + bono_agui_indem + decreto + fija + variable

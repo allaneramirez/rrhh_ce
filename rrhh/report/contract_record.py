@@ -22,10 +22,13 @@ class ReportRecibo(models.AbstractModel):
     def salario_formateado(self,salario):
         salario_formateado = "Q{:,.2f}".format(salario)
         return salario_formateado
+
     def formato_fecha(self, fecha):
         if fecha:
-
-            return fecha.strftime('%d de %B de %Y')
+            mes = fecha.month
+            mes_letras = a_letras.mes_a_letras(mes)
+            # Obtener el nombre del mes y formatear la fecha
+            return fecha.strftime(f'%d de {mes_letras} de %Y')
         else:
             return ''
 

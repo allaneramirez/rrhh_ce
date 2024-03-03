@@ -2,6 +2,7 @@
 
 from odoo import api, models, fields
 from datetime import datetime
+from . import a_letras
 
 
 
@@ -69,11 +70,13 @@ class ReportRecibo(models.AbstractModel):
             result['lineas'] = zip(lineas_ingresos, lineas_deducciones, lineas_entradas)
 
         return result
+
     def formato_fecha(self, fecha):
         if fecha:
-
+            mes = fecha.month
+            mes_letras = a_letras.mes_a_letras(mes)
             # Obtener el nombre del mes y formatear la fecha
-            return fecha.strftime('%d de %B de %Y')
+            return fecha.strftime(f'%d de {mes_letras} de %Y')
         else:
             return ''
     def formato_salario(self,salario):
@@ -93,7 +96,7 @@ class ReportRecibo(models.AbstractModel):
         # locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
 
         # Obtener el nombre del mes
-        current_month_in_words = datetime.now().strftime('%B')
+        current_month_in_words = a_letras.mes_a_letras(datetime.now().month)
 
         return {
             'doc_ids': docids,

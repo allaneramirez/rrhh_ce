@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="prest_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="margin-top:-15px" t-attf-class="page size-letter">
+                        <style>
+                            body {
+                            font-family: sans-serif;
+                            font-size:18;
+                            line-height: 1.6;
+                            }
+
+                            * {
+                            font-family: sans-serif;
+                            font-size: 18px;
+                            }
+
+                        </style>
+
+                        <h4 style="text-align: center; padding-bottom:75px;">CONVENIO POR ANTICIPO DE PRESTACIONES
+                            LABORALES
+                        </h4>
+
+                        <p style="text-align: justify;">
+                            En el municipio de Villa Nueva, departamento de Guatemala el
+                            <span t-esc="fecha_a_letras(o.date)"/>
+                            constituidos en las oficinas administrativas de la empresa <span style="font-weight:bold">
+                            ABSORBENTES DE CENTROAMÉRICA, SOCIEDAD ANÓNIMA&#160;&#160;&#160;&#160;</span>,
+                            comparecen <span t-field="o.employee_id.name"
+                                            style="font-weight:bold"/>,
+                            de
+                            <span t-esc="a_letras(o.employee_id.edad)"/>
+                            años de edad,<span t-field="o.employee_id.job_id.name"/>,
+                            <span t-esc="marital(o.employee_id.cod_est_civil)"/>
+                            quien se identifica con documento Personal de
+                            Identificación DPI Código Único de Identificación CUI
+                            <span t-field="o.employee_id.vecindad_dpi"/>
+                            extendido por el Registro Nacional de las Personas de la República de Guatemala a quien se
+                            le
+                            denominará como <span style="font-weight:bold">TRABAJADOR</span> ocupando el puesto de<span
+                                t-field="o.employee_id.job_id.name"/>,
+                            y <span style="font-weight:bold">JUAN JOSE FERNANDO LIRA REYNA&#160;&#160;&#160;</span>  quien actúa en
+                            calidad de representante legal de la entidad
+                            ABSORBENTES DE CENTROAMÉRICA, SOCIEDAD ANÓNIMA, según nombramiento inscrito
+                            en el Registro mercantil Guatemala Registro seiscientos quince mil ochocientos cincuenta y cinco (615855)
+                            folio ochocientos ochenta y uno (881) libro setecientos sesenta y seis (766) de los
+                            auxiliares
+                            de comercio a quien se le denominará como el <span style="font-weight:bold">PATRONO</span>.
+                            Quienes celebran el
+                            <span style="font-weight:bold">CONVENIO POR ANTICIPO DE PRESTACIONES LABORALES&#160;&#160;&#160;</span>
+                            por lo que se procede de
+                            la siguiente forma: <span style="font-weight:bold">PRIMERO</span> en mi calidad de
+                            TRABAJADOR
+                            ocupando el puesto de
+                            <span t-field="o.employee_id.job_id.name"/>
+                            inicié la relación laboral
+                            de manera ininterrumpida el
+                            <span t-esc="fecha_a_letras(o.employee_id.contract_id.date_start)"/>
+                            devengando actualmente un salario promedio mensual de
+                            <span t-esc="salario_a_letras(o.employee_id.contract_id.wage+o.employee_id.contract_id.bonificacion)"/>
+                            (
+                            <span t-esc="salario_formateado(o.employee_id.contract_id.wage+o.employee_id.contract_id.bonificacion)"/>
+                            )
+                            perteneciendo al área de producción<span t-esc="area(o.employee_id.department_id.name)"/>.
+                            <span style="font-weight:bold">SEGUNDO</span>
+                            Se verifica en sistema el registro laboral y
+                            lo manifestado por EL TRABAJADOR resulta ser cierto.
+                            <span style="font-weight:bold">TERCERO</span>
+                            EL TRABAJADOR indica que es de su
+                            interés que se le realice un anticipo de prestaciones correspondientes al período
+                            <span t-field="o.period_from"/>
+                            -
+                            <span t-field="o.period_to"/>
+                            por
+                            el monto
+                            <span t-esc="salario_a_letras(o.loan_amount)"/>
+                            (
+                            <span t-esc="salario_formateado(o.loan_amount)"/>
+                            ) cantidad que requiere le sea
+                            debitado en la planilla correspondiente a
+                            <span t-esc="planilla(o.planilla)"/>
+                            la cual es pagadera el
+                            <t t-if="o.planilla == 'b14'">
+
+                                <span>
+                                    el quince de julio de
+                                    <span t-esc="a_letras(o.period_to)"/>
+                                </span>
+                            </t>
+                            <t t-if="o.planilla == 'agui'">
+
+                                <span>
+                                    el quince de deciembre de
+                                    <span t-esc="a_letras(o.period_to)"/>
+                                </span>
+                            </t>
+                            y lo que tenga a su favor le sea pagado en la planilla correspondiente.
+                            <span style="font-weight:bold">CUARTO</span>
+                            el PATRONO ante solicitud expuesta por EL TRABAJADOR por necesidad evidente y justificable
+                            autoriza el anticipo solicitado, y que se le haga la entrega del monto convenido a través de
+                            cheque o trasferencia a nombre de EL TRABAJADOR.
+                            <span style="font-weight:bold">QUINTO</span>
+                            los comparecientes bien enterados de su contenido y
+                            de los efectos legales en especial que con su firma y huella dactilar EL TRABAJADOR da su
+                            consentimiento pleno y expreso de la aplicación del presente documento en el cálculo de
+                            prestaciones correspondientes (Bono 14, aguinaldo, vacaciones e indemnización acumulados)
+                            en el caso de la finalización de la relación laboral ya sea por voluntad de una de las
+                            partes,
+                            por mutuo consentimiento o por causa imputable a alguna de las partes,
+                            en el caso que no se haya cumplido con la obligación en el plazo establecido
+                            en el presente convenio autoriza la TRABAJADORA se aplique el débito correspondiente
+                            de lo faltante en el pago de prestaciones laborales. Consta en dos hojas de
+                            papel bond tamaño carta firma y huella dactilar de la trabajadora, firma del patrono.
+
+                        </p>
+                        <table style="width: 100%; text-align:center; margin-top:120px;  font-size:14px">
+                            <tr>
+
+                                <td style="width: 50%;">
+
+                                    <p>f._____________________________________</p>
+                                    <span t-esc="o.employee_id.name.title()"/>
+                                    <p style="font-weight:bold;">Empleado</p>
+                                </td>
+
+
+                                <td style="width: 50%;">
+
+                                    <p>f._____________________________________</p>
+                                        <span>Juan Jose Fernando Lira Reyna</span>
+                                        <p style="font-weight:bold;">Patrono</p>
+
+                                </td>
+
+                            </tr>
+                        </table>
+
+
+                        <p style="text-align: justify;">
+                            En el municipio de Villa Nueva, departamento de Guatemala el
+                            <span t-esc="fecha_a_letras(o.date)"/>
+                            ante
+                            el infrascrito notario DOY FE: Que la firmas que anteceden son AUTENTICAS
+                            por haber sido signadas a mi presencia el día de hoy por el señor JUAN JOSE FERNANDO LIRA
+                            REYNA,
+                            quien se identifica con el Documento Personal de Identificación con Código Único de
+                            Identificación mil quinientos setenta y nueve, cuarenta y nueve mil cuarenta y cuatro, cero
+                            ciento uno
+                            (1579 49044 0101) y el(la) señor(a)
+                            <span t-field="o.employee_id.name"/>
+                            quien se identifica con el
+                            Documento Personal de Identificación con Código Único de Identificación
+                            (<span t-field="o.employee_id.vecindad_dpi"/>) extendidos por el Registro Nacional de las
+                            Personas de la República de Guatemala.
+                            Firman los signatarios la presente acta de legalización.
+                        </p>
+
+                        <table style="width: 100%; text-align:center; margin-top:120px;  font-size:14px">
+                            <tr>
+
+                                <td style="width: 50%;">
+
+                                    <p>f._____________________________________</p>
+                                    <span t-esc="o.employee_id.name.title()"/>
+                                    <p style="font-family:'sans-serif'; font-weight:bold;">Empleado</p>
+                                </td>
+
+
+                                <td style="width: 50%;">
+
+                                    <p>f._____________________________________</p>
+                                        <span>Juan Jose Fernando Lira Reyna</span>
+                                        <p style="font-family:'sans-serif'; font-weight:bold;">Patrono
+                                        </p>
+
+                                </td>
+
+                            </tr>
+                        </table>
+
+                        <p style="text-align: justify; font-weight:bold">
+                            ANTE MI
+                        </p>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+
+    </template>
+</odoo>

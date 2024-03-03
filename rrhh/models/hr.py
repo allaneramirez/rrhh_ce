@@ -62,7 +62,7 @@ class HrEmployee(models.Model):
     segundo_apellido = fields.Char('Segundo apellido',groups="hr.group_hr_user")
     apellido_casada = fields.Char('Apellido casada',groups="hr.group_hr_user")
     centro_trabajo_id = fields.Many2one('res.company.centro_trabajo',strin='Centro de trabajo',groups="hr.group_hr_user")
-
+    cod_est_civil = fields.Char('Codigo Estado Civil',groups="hr.group_hr_user")
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         res1 = super(HrEmployee, self).name_search(name, args, operator=operator, limit=limit)

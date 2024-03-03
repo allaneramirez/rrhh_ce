@@ -23,8 +23,9 @@ class rrhh_inputs_wizard(models.TransientModel):
             hoja = libro.add_worksheet("Entradas")
             hoja.set_column(0, 0, 45)
 
-            hoja.write(0, 0, 'Empleado', header_format)
-            i = 1
+            hoja.write(0, 0, 'Codigo', header_format)
+            hoja.write(0, 1, 'Empleado', header_format)
+            i = 2
             # Agregando las entradas seleccionadas al encabezado
             for input in self.inputs_ids:
                 hoja.write(0, i, input.code, header_format)
@@ -36,7 +37,8 @@ class rrhh_inputs_wizard(models.TransientModel):
 
             j = 1
             for pay in hr_payslip_run.slip_ids:
-                hoja.write(j, 0, pay.employee_id.name)
+                hoja.write(j, 0, pay.employee_id.codigo_empleado)
+                hoja.write(j, 1, pay.employee_id.name)
                 j += 1
 
             libro.close()

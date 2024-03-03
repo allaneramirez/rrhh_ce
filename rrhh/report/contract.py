@@ -3,6 +3,7 @@ import locale
 from odoo import api, models, fields
 from datetime import datetime
 from . import a_letras
+import math
 
 class ReportRecibo(models.AbstractModel):
     _name = 'report.rrhh.contr_report'
@@ -45,7 +46,9 @@ class ReportRecibo(models.AbstractModel):
 
             jornadas_text += calendar.name+":"
             lunes = calendar.attendance_ids.filtered(lambda att: 'lunes' in att.name.lower())
-            sabado = calendar.attendance_ids.filtered(lambda att: '	sabado' in att.name.lower())
+            sabado = calendar.attendance_ids.filtered(lambda att: 'sabado' in att.name.lower())
+            print()
+            print(sabado,"sabadoo!!")
 
             from_hours = []
             to_hours = []
@@ -55,27 +58,51 @@ class ReportRecibo(models.AbstractModel):
                 horas_diarias += att.hour_to - att.hour_from
                 from_hours.append(att.hour_from)
                 to_hours.append(att.hour_to)
+            print(horas_diarias,"diarias!")
+            horas_diarias = math.ceil(horas_diarias)
 
             horas_semanales = 0
             for att in calendar.attendance_ids:
                 horas_semanales += att.hour_to - att.hour_from
+            print(horas_semanales,"semanales!")
+            horas_semanales = math.ceil(horas_semanales)
 
             jornadas_text += f' será de {int(horas_diarias)} horas diarias y {int(horas_semanales)} horas a la semana así: '
             primer_ciclo = True
             for fromh, toh in zip(from_hours,to_hours):
                 if primer_ciclo:
-                    jornadas_text += f'de {"{:.0f}:00".format(fromh)} am a {"{:.0f}:00".format(toh)}'
+                    jornadas_text += f'de {"{:.0f}:00".format(fromh)} a {"{:.0f}:00".format(toh)}'
                     primer_ciclo = False
                 else:
                     jornadas_text += f' y de {"{:.0f}:00".format(fromh)} a {"{:.0f}:00".format(toh)} horas'
 
-            if sabado:
+            if sabado and calendar.name.lower() != 'nocturna':
                 for att in sabado:
-                    jornadas_text += f'excepto el día sábado que será de las {att.hour_from} am horas hasta las {att.hour_to} horas'
+                    jornadas_text += f' excepto el día sábado que será de las {att.hour_from} am horas hasta las {att.hour_to} horas'
 
             jornadas_text += f' para completar las {int(horas_semanales)} horas de la semana. '
 
         return jornadas_text
+
+    def gender(self,gender):
+        if gender == 'male':
+            return 'masculino'
+        else:
+            return 'femenino'
+
+    def marital(self,marital):
+        if marital == "single":
+            return 'soltero'
+        else:
+            return 'casado'
+
+    def nationality(self, gender):
+        if gender == 'male':
+            return 'guatemalteco'
+        else:
+            return 'guatemalteca'
+
+
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -97,6 +124,9 @@ class ReportRecibo(models.AbstractModel):
             'salario_a_letras': self.salario_a_letras,
             'salario_formateado': self.salario_formateado,
             'horarios': self.horarios,
+            'nationality': self.nationality,
+            'marital': self.marital,
+            'gender': self.gender,
             # 'formato_fecha': self.formato_fecha,
             'index_range': range(len(docs)),
             'current_month_in_words': current_month_in_words,

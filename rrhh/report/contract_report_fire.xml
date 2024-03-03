@@ -18,7 +18,7 @@
                     <p style="text-align:start">Estimado(a)<br/><span t-esc="o.employee_id.name.title()"/></p>
                     <br/>
                     <p style="text-align:justify">
-                        Por este medio hacemos de su conocimiento que, <span style="font-weight:bold">ABSORBENTES DE CENTROAMÉRICA S.A,</span> empresa en la
+                        Por este medio hacemos de su conocimiento que, <span style="font-weight:bold">ABSORBENTES DE CENTROAMÉRICA S.A,</span>&#160;&#160; empresa en la
                         cual labora desde el <span t-esc="formato_fecha(o.date_start)"/>, como promo vendedora, ha tomado la decisión de prescindir de
                         sus servicios a partir del <span t-esc="formato_fecha(o.date_end)"/> por reestructuración del departamento.
                     </p>

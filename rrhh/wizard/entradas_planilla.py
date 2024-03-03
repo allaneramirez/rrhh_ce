@@ -35,13 +35,14 @@ class rrhh_inputs_wizard(models.TransientModel):
                 amount = sheet.cell_value(row_index, col_index)
 
                 hr_payslip_input_type = self.env['hr.payslip.input.type.2'].search([('code','=',entry_code)])
+                employee = self.env['hr.employee'].search([('name','=',employee_name)])
 
                 if not hr_payslip_input_type:
                     raise ValidationError(_(
                         "Codigo de entrada no encontrado: %s" % (sheet.cell(0, col_index).value)
                     ))
 
-                if not employee_name:
+                if not employee:
                     raise ValidationError(_(
                         "Empleado no encontrado: %s" % (sheet.cell(row_index, 0).value)
                     ))

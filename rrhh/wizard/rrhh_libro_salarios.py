@@ -65,7 +65,7 @@ class rrhh_libro_salarios(models.TransientModel):
                 hoja.merge_range('S13:V13','Ocupación', center_border_top)
                 # SECOND LINE
                 hoja.merge_range('A15:E15', empleado.igss, center)
-                hoja.merge_range('G15:I15', empleado.identification_id, center)
+                hoja.merge_range('G15:I15', empleado.vecindad_dpi, center)
                 hoja.merge_range('N15:Q15', fecha['fecha_ingreso'], date_format)
                 if fecha['fecha_finalizacion']:
                     hoja.merge_range('S15:V15', fecha['fecha_finalizacion'], date_format)

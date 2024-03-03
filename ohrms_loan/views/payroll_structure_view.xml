@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_hr_payroll_structure_inherited" model="ir.ui.view">
+        <field name="name">hr.structure.inherited.form</field>
+        <field name="model">hr.payroll.structure</field>
+        <field name="inherit_id" ref="payroll.hr_payroll_structure_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="prestamo_pago_mensual"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

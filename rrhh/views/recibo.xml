@@ -2,14 +2,15 @@
 <odoo>
     <template id="recibo">
         <t t-call="web.html_container">
-            <t t-set="data_report_margin_top" t-value="4"/>
+            <t t-set="data_report_margin_top" t-value="2"/>
+            <t t-set="data_report_margin_bottom" t-value="1"/>
             <t t-set="data_report_header_spacing" t-value="3"/>
             <t t-set="data_report_dpi" t-value="110"/>
             <div class="article">
                 <style>
                     body {
                     font-family: 'Arial', sans-serif;
-                    line-height: 1;
+                    line-height: 1.6;
                     font-size: 14px;
                     color: #333;
                     }
@@ -63,6 +64,14 @@
                     font-size: 14px;
                     width: 100%;
                     text-align: center;
+                    }
+
+                    .cut-line {
+                    width: 100%;
+                    height: 0;
+                    border-top: 1px dashed black;
+                    margin-top: 25px;
+
                     }
 
                 </style>
@@ -177,6 +186,38 @@
                                         </t>
                                     </t>
                                 </tr>
+                                <!--                                Horas Extras -->
+                                <tr>
+
+                                    <t t-foreach="o.input_line_ids" t-as="i">
+                                        <t t-set="horas" t-value="0.0"/>
+                                        <t t-if="i.code == 'HEXT'">
+                                            <t t-set="horas" t-value="i.amount"/>
+                                            <td>
+                                                <strong>Horas Extras Diurna:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-esc="horas"/>
+                                            </td>
+                                        </t>
+
+                                    </t>
+
+
+                                    <t t-foreach="o.input_line_ids" t-as="i">
+                                        <t t-set="horas" t-value="0.0"/>
+                                        <t t-if="i.code == 'HEXT2'">
+                                            <t t-set="horas" t-value="i.amount"/>
+                                            <td>
+                                                <strong>Horas Extras Nocturna:</strong>
+                                            </td>
+                                            <td>
+                                                <span t-esc="horas"/>
+                                            </td>
+                                        </t>
+
+                                    </t>
+                                </tr>
                             </table>
                             <br/>
                             <!--                        ################## Ingresos y Deducciones ################# -->
@@ -251,6 +292,12 @@
                                 </span>
                                 <br/>
                             </div>
+                            <div style="text-align:center; margin-top:25px; position:absolute;">- - - - - - - - - - - -
+                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                - - - - - - - - - - - - - - - - - - - - -
+                            </div>
+
                             <!--                            #################-->
                             <div class="company-info"
                                  style="display: flex; align-items: center; justify-content: space-between; width:100%;">
@@ -273,7 +320,7 @@
                                 </div>
                             </div>
                             <table class="table table-sm table-condensed"
-                                   style="width:100%;margin-top:10px; font-size:14px;">
+                                   style="width:100%;margin-top:5px; font-size:14px;">
                                 <tr>
                                     <td>
                                         <strong>Nombre del Empleado:</strong>
@@ -358,11 +405,43 @@
                                             </td>
                                         </t>
                                     </t>
+                                    <!--                                    HORAS EXT-->
+                                    <tr>
+
+                                        <t t-foreach="o.input_line_ids" t-as="i">
+                                            <t t-set="horas" t-value="0.0"/>
+                                            <t t-if="i.code == 'HEXT'">
+                                                <t t-set="horas" t-value="i.amount"/>
+                                                <td>
+                                                    <strong>Horas Extras Diurna:</strong>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="horas"/>
+                                                </td>
+                                            </t>
+
+                                        </t>
+
+
+                                        <t t-foreach="o.input_line_ids" t-as="i">
+                                            <t t-set="horas" t-value="0.0"/>
+                                            <t t-if="i.code == 'HEXT2'">
+                                                <t t-set="horas" t-value="i.amount"/>
+                                                <td>
+                                                    <strong>Horas Extras Nocturna:</strong>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="horas"/>
+                                                </td>
+                                            </t>
+
+                                        </t>
+                                    </tr>
                                 </tr>
                             </table>
                             <br/>
                             <!--                        ################## Ingresos y Deducciones ################# -->
-                            <div class="row" style="width:100%;margin-top:20px; font-size:14px;">
+                            <div class="row" style="width:100%;margin-top:15px; font-size:14px;">
                                 <!--                            <span t-set="detail" t-value="o.get_payslip_data()"/>-->
                                 <!--                            <span t-set="total_line_data" t-value="o.get_payslip_data(flag=1)"/>-->
                                 <table>
@@ -614,12 +693,9 @@
                                 <span t-field="o.company_id.street" style="text-align:left; font-weight:20px"/>
                             </div>
 
-
                             <div class="page">
-                                <p style="text-align:left; font-size:18px; padding-top:185px; font-weight:bold">
-                                    FINIQUITO
-                                    LABORAL
-
+                                <p style="text-align:justify; font-size:18px; padding-top:185px; font-weight:bold">
+                                    FINIQUITO LABORAL
                                 </p>
                                 <div class="oe_structure"/>
 
@@ -644,12 +720,12 @@
                                             nacimiento, con residencia en:
                                             <span t-esc="o.employee_id.address_home_id.street"/>,e identificándome
                                             mediante Documento Personal de Identificación número
-                                            <span t-esc="o.employee_id.identification_id"/>, extendido por el Registro
+                                            <span t-esc="o.employee_id.vecindad_dpi"/>, extendido por el Registro
                                             Nacional de las
                                             Personas de la República de Guatemala RENAP. Por el presente documento dejo
                                             constancia de lo siguiente: Primero: Que ingresé a laborar a&#160;
                                             <span t-esc="o.company_id.name" style="font-weight:bold"/>,
-                                            &#160;&#160; el&#160;
+                                            el&#160;
                                             <span t-esc="formato_fecha(o.contract_id.date_start)"/>, habiendo sido
                                             <t t-if="o.employee_id.gender == 'male'">despedido</t>
                                             <t t-if="o.employee_id.gender != 'male'">despedida</t>
@@ -669,7 +745,7 @@
                                             no existe ninguna presunción legal que a mi favor pueda alegar. Tercero:
                                             Por lo expuesto otorgo a favor de<span t-esc="o.company_id.name"
                                                                                    style="font-weight:bold"/>,
-                                            &#160;&#160;&#160;extiendo el más amplio, completo y eficaz finiquito
+                                            extiendo el más amplio, completo y eficaz finiquito
                                             laboral por el tiempo servido,
                                             sin reservarme acción alguna quedando definitivamente disuelto el vínculo
                                             jurídico
@@ -691,7 +767,7 @@
                                                 con anterioridad
                                                 al presente acto se identifica con Documento Personal de Identificación
                                                 número
-                                                <span t-esc="o.employee_id.identification_id"/>, quien firma
+                                                <span t-esc="o.employee_id.vecindad_dpi"/>, quien firma
                                                 conjuntamente con el
                                                 infrascrito notario la presente acta de legalización de firmas.
                                             </p>

@@ -26,6 +26,7 @@
                                 <field name="apellido_casada"/>
                                 <field name="pueblo_pertenencia"/>
                                 <field name="hijos"/>
+                                <field name="cod_est_civil"/>
                                 <field name="comunidad_ling"/>
                                 <field name="codigo_empleado"/>
                                 <field name="igss"/>

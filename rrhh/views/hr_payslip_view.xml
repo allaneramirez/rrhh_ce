@@ -6,7 +6,7 @@
             <field name="model">hr.payslip</field>
             <field name="inherit_id" ref="payroll.hr_payslip_view_tree"/>
             <field name="arch" type="xml">
-               <xpath expr="//field[@name='name']" position="attributes">
+                <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='activity_ids']" position="attributes">
@@ -14,7 +14,23 @@
                 </xpath>
                 <xpath expr="//tree" position="inside">
                     <field name="net_wage"/>
-                    <field name="payslip_run_id" />
+                    <field name="payslip_run_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+
+    <data>
+        <!-- Agregar el campo leave_allocation_id a la vista form de hr.payslip -->
+        <record model="ir.ui.view" id="view_hr_payslip_form_inherited">
+            <field name="name">hr.payslip.form.inherited</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="payroll.hr_payslip_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <field name="leave_allocation_id" domain="[('employee_id', '=', employee_id)]"/>
+                    <field name="dias_vacaciones"/>
+                    <field name="leave_id" attrs="{'invisible': [('leave_id', '=', False)]}"/>
                 </xpath>
             </field>
         </record>

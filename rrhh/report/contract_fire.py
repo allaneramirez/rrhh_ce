@@ -18,14 +18,12 @@ class ReportRecibo(models.AbstractModel):
             date_in_words = self.a_letras(day)+" de "+a_letras.mes_a_letras(month)+" de "+self.a_letras(year)
             return date_in_words
 
-
     def formato_fecha(self, fecha):
         if fecha:
-            # # Configurar la localización a español
-            # locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
-
+            mes = fecha.month
+            mes_letras = a_letras.mes_a_letras(mes)
             # Obtener el nombre del mes y formatear la fecha
-            return fecha.strftime('%d de %B de %Y')
+            return fecha.strftime(f'%d de {mes_letras} de %Y')
         else:
             return ''
 
