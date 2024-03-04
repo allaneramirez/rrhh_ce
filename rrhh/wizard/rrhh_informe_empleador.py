@@ -196,58 +196,69 @@ class rrhh_informe_empleador(models.TransientModel):
         datas['form'] = res
         return self.env.ref('rrhh.action_informe_empleador').report_action([], data=datas)
 
-    def dias_trabajados_anual(self, empleado_id, anio):
-        anio_inicio_contrato = int(empleado_id.contract_id.date_start.year)
-        # AÑO MES Y DIA DEL PRIMERO DE ENERO
-        anio_inicio = datetime.strptime(str(anio) + '-01' + '-01', '%Y-%m-%d').date().strftime('%Y-%m-%d')
-        # AÑO MES Y DIA DEL 31 DE DICIEMBRE
-        anio_fin = datetime.strptime(str(anio) + '-12' + '-31', '%Y-%m-%d').date().strftime('%Y-%m-%d')
+    def dias_trabajados_anual(self, empleado_id, anio, payslips):
+        print(payslips,"que pedo")
         dias_laborados = 0
-        empleado = self.env['hr.employee'].browse(empleado_id.id)
+        for pay in payslips:
+            for input in pay.input_line_ids:
+                if input.code == 'DL':
+                    dias_laborados += input.amount
 
-        # SI TENEMOS FINALIZACION DE CONTRATO
-        if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end:
-            anio_fin_contrato = int(empleado_id.contract_id.date_end.year)
-            #SI EL INICIO Y FIN DE CONTRATO ES EN EL MISMO AÑO QUE SE REALIZADO EL INFORME
-            if anio_inicio_contrato == anio and anio_fin_contrato == anio:
-                dias = empleado._get_work_days_data_batch(Datetime.from_string(empleado_id.contract_id.date_start),
-                                                          Datetime.from_string(empleado_id.contract_id.date_end),
-                                                          calendar=empleado_id.contract_id.resource_calendar_id)
-                if dias:
-                    print(dias,"dias trabajados!!")
-                    for dato in dias:
-                        print(dato,"datoo")
-                        if 'days' in dias[dato]:
-                            dias_laborados = dias[dato]['days']
-            # SI EL CONTRATO DE INCIO ES DIFERENTE AL AÑO DEL INFORME PERO ES IGUAL AL DEL AÑO DE FIN DEL CONTRATO
-            if anio_inicio_contrato != anio and anio_fin_contrato == anio:
-                dias = empleado._get_work_days_data_batch(Datetime.from_string(anio_inicio),
-                                                          Datetime.from_string(empleado_id.contract_id.date_end),
-                                                          calendar=empleado_id.contract_id.resource_calendar_id)
-                if dias:
-                    for dato in dias:
-                        if 'days' in dias[dato]:
-                            dias_laborados = dias[dato]['days']
-        # SI TIENE INICIO DE CONTRATO PERO NO TIENE FINALIZACION DE CONTRATO
-        if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end == False:
-            # SI EL INICIO DE CONTRATO ES EL MISMO QUE EN EL WIZARD
-            if anio_inicio_contrato == anio:
-                dias = empleado._get_work_days_data_batch(Datetime.from_string(empleado_id.contract_id.date_start),
-                                                          Datetime.from_string(anio_fin),
-                                                          calendar=empleado_id.contract_id.resource_calendar_id)
-                if dias:
-                    for dato in dias:
-                        if 'days' in dias[dato]:
-                            dias_laborados = dias[dato]['days']
-            #TOMAMOS EL RANGO DE TODOO EL AÑO
-            else:
-                dias = empleado_id._get_work_days_data_batch(Datetime.from_string(anio_inicio),
-                                                             Datetime.from_string(anio_fin),
-                                                             calendar=empleado_id.contract_id.resource_calendar_id)
-                if dias:
-                    for dato in dias:
-                        if 'days' in dias[dato]:
-                            dias_laborados = dias[dato]['days']
+        # anio_inicio_contrato = int(empleado_id.contract_id.date_start.year)
+        # # AÑO MES Y DIA DEL PRIMERO DE ENERO
+        # anio_inicio = datetime.strptime(str(anio) + '-02' + '-01', '%Y-%m-%d').date().strftime('%Y-%m-%d')
+        # # AÑO MES Y DIA DEL 31 DE DICIEMBRE
+        # anio_fin = datetime.strptime(str(anio) + '-02' + '-29', '%Y-%m-%d').date().strftime('%Y-%m-%d')
+        # dias_laborados = 0
+        # empleado = self.env['hr.employee'].browse(empleado_id.id)
+        #
+        # # SI TENEMOS FINALIZACION DE CONTRATO
+        # if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end:
+        #     anio_fin_contrato = int(empleado_id.contract_id.date_end.year)
+        #     #SI EL INICIO Y FIN DE CONTRATO ES EN EL MISMO AÑO QUE SE REALIZADO EL INFORME
+        #     if anio_inicio_contrato == anio and anio_fin_contrato == anio:
+        #         dias = empleado._get_work_days_data_batch(Datetime.from_string(empleado_id.contract_id.date_start),
+        #                                                   Datetime.from_string(empleado_id.contract_id.date_end),
+        #                                                   calendar=empleado_id.contract_id.resource_calendar_id)
+        #         if dias:
+        #             print(dias,"dias trabajados!!")
+        #             for dato in dias:
+        #                 print(dato,"datoo")
+        #                 if 'days' in dias[dato]:
+        #                     dias_laborados = dias[dato]['days']
+        #     # SI EL CONTRATO DE INCIO ES DIFERENTE AL AÑO DEL INFORME PERO ES IGUAL AL DEL AÑO DE FIN DEL CONTRATO
+        #     if anio_inicio_contrato != anio and anio_fin_contrato == anio:
+        #         dias = empleado._get_work_days_data_batch(Datetime.from_string(anio_inicio),
+        #                                                   Datetime.from_string(empleado_id.contract_id.date_end),
+        #                                                   calendar=empleado_id.contract_id.resource_calendar_id)
+        #         if dias:
+        #             for dato in dias:
+        #                 if 'days' in dias[dato]:
+        #                     dias_laborados = dias[dato]['days']
+        # # SI TIENE INICIO DE CONTRATO PERO NO TIENE FINALIZACION DE CONTRATO
+        # if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end == False:
+        #     # SI EL INICIO DE CONTRATO ES EL MISMO QUE EN EL WIZARD
+        #     if anio_inicio_contrato == anio:
+        #         dias = empleado._get_work_days_data_batch(Datetime.from_string(empleado_id.contract_id.date_start),
+        #                                                   Datetime.from_string(anio_fin),
+        #                                                   calendar=empleado_id.contract_id.resource_calendar_id)
+        #         if dias:
+        #             for dato in dias:
+        #                 if 'days' in dias[dato]:
+        #                     dias_laborados = dias[dato]['days']
+        #     #TOMAMOS EL RANGO DE TODOO EL AÑO
+        #     else:
+        #         print(empleado_id.name,"empleado")
+        #         dias = empleado_id._get_work_days_data_batch(Datetime.from_string(anio_inicio),
+        #                                                      Datetime.from_string(anio_fin),
+        #                                                      calendar=empleado_id.contract_id.resource_calendar_id)
+        #         print(dias,"dias")
+        #
+        #         if dias:
+        #             for dato in dias:
+        #                 print(dato,"datoo!")
+        #                 if 'days' in dias[dato]:
+        #                     dias_laborados = dias[dato]['days']
         return dias_laborados
 
     def print_report_excel(self):
@@ -344,7 +355,7 @@ class rrhh_informe_empleador(models.TransientModel):
                     nominas_lista = []
                     contrato = self.env['hr.contract'].search(
                         [('employee_id', '=', empleado.id), ('state', '=', 'open')])
-                    nomina_id = self.env['hr.payslip'].search([['employee_id', '=', empleado.id]])
+                    nomina_id = self.env['hr.payslip'].search([['employee_id', '=', empleado.id],['struct_id.name',"=","2da Quincena"],['state','=','done']])
                     dias_trabajados = 0
                     salario_anual_nominal = 0
                     bonificacion = 0
@@ -369,9 +380,11 @@ class rrhh_informe_empleador(models.TransientModel):
                     numero_horas_extra = 0
                     numero_nominas_salario = 0
                     genero = ''
+                    dias_trabajados_anual = self.dias_trabajados_anual(empleado, w['anio'], nomina_id)
                     for nomina in nomina_id:
                         nomina_anio = nomina.date_from.year
                         nomina_mes = nomina.date_from.month
+
                         # w as wizard
                         if w['anio'] == nomina_anio:
                             # SI TIENE OTRAS ENTRADAS COMO HE
@@ -450,9 +463,7 @@ class rrhh_informe_empleador(models.TransientModel):
                         estado_civil = 5
                     if empleado.marital == 'unido':
                         estado_civil = 6
-                    print( empleado.birthday,contrato.date_start,"fecha incorrecta")
 
-                    dias_trabajados_anual = self.dias_trabajados_anual(empleado, w['anio'])
                     hoja_empleado.write(fila, 0, empleado_numero)
                     hoja_empleado.write(fila, 1, empleado.primer_nombre if empleado.primer_nombre else '')
                     hoja_empleado.write(fila, 2, empleado.segundo_nombre if empleado.segundo_nombre else '')

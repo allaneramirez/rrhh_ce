@@ -29,12 +29,12 @@ class rrhh_inputs_wizard(models.TransientModel):
             pay.input_line_ids.unlink()
         # Iterate over each row in the Excel file and create hr.payslip.input records
         for row_index in range(1, sheet.nrows):  # Assuming the first row contains headers
-            for col_index in range(1, sheet.ncols):
-                employee_name = sheet.cell_value(row_index, 0)
+            for col_index in range(2, sheet.ncols):
+                employee_name = sheet.cell_value(row_index, 1)
                 entry_code = sheet.cell_value(0, col_index)
                 amount = sheet.cell_value(row_index, col_index)
 
-                hr_payslip_input_type = self.env['hr.payslip.input.type.2'].search([('code','=',entry_code)])
+                hr_payslip_input_type = self.env['hr.payslip.input.type.2'].search([('code','=',entry_code)],limit=1)
                 employee = self.env['hr.employee'].search([('name','=',employee_name)])
 
                 if not hr_payslip_input_type:
@@ -51,7 +51,8 @@ class rrhh_inputs_wizard(models.TransientModel):
                 # Find the payslip for the employee (customize this query based on your actual model structure)
                 payslip = self.env['hr.payslip'].search(
                     [('employee_id.name', '=', employee_name), ('payslip_run_id', '=', active_batch_id)], limit=1)
-
+                if not payslip.contract_id:
+                    raise ValidationError("Contrato no encontrado para: %s" % employee_name)
                 if payslip:
                     # Create hr.payslip.input record
                     input_vals = {

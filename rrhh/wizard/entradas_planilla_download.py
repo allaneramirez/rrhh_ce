@@ -21,7 +21,7 @@ class rrhh_inputs_wizard(models.TransientModel):
                  'bold': True, 'border': 1
                  })
             hoja = libro.add_worksheet("Entradas")
-            hoja.set_column(0, 0, 45)
+            hoja.set_column(1, 1, 45)
 
             hoja.write(0, 0, 'Codigo', header_format)
             hoja.write(0, 1, 'Empleado', header_format)

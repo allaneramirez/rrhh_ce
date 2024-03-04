@@ -208,8 +208,11 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         res = super(HrPayslip, self).compute_sheet()
         if self.leave_id:
-            entry_code = 'VACREZ'
             self.leave_id.unlink()
+
+        if self.leave_allocation_id:
+            entry_code = 'VACREZ'
+
             old_input = self.input_line_ids.filtered(lambda input: input.code == entry_code)
             old_input.unlink() if old_input else None
             leave = self.env['hr.leave'].create({
