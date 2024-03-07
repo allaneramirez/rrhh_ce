@@ -22,11 +22,21 @@
     </record>
 
     <record id="report_contract_record" model="ir.actions.report">
-        <field name="name">Constancia laboral</field>
+        <field name="name">Constancia laboral Despido</field>
         <field name="model">hr.contract</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">rrhh.contr_report_record</field>
         <field name="report_file">rrhh.contr_report_record</field>
+        <field name="binding_model_id" ref="model_hr_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+
+     <record id="report_contract_record_resig" model="ir.actions.report">
+        <field name="name">Constancia laboral Renuncia</field>
+        <field name="model">hr.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rrhh.contr_report_record_resig</field>
+        <field name="report_file">rrhh.contr_report_record_resig</field>
         <field name="binding_model_id" ref="model_hr_contract"/>
         <field name="binding_type">report</field>
     </record>

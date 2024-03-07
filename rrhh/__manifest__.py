@@ -25,6 +25,7 @@
         'views/planilla_views.xml',
         'views/report.xml',
         'views/recibo.xml',
+        'report/contract_report_record_resig.xml',
         'views/hr_payslip_view.xml',
         # 'views/hr_leaves_view.xml',
         'views/res_company_views.xml',

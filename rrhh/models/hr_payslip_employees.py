@@ -21,6 +21,7 @@ class HrPayslipEmployees(models.TransientModel):
             self.employee_ids = [(5,)]
 
     def compute_sheet(self):
+        print("que pedoooooo?")
         payslips = self.env["hr.payslip"]
         [data] = self.read()
         active_id = self.env.context.get("active_id")
@@ -28,12 +29,17 @@ class HrPayslipEmployees(models.TransientModel):
             [run_data] = (
                 self.env["hr.payslip.run"]
                 .browse(active_id)
-                .read(["date_start", "date_end", "credit_note", "struct_id","slip_ids"])
+                .read(["date_start", "date_end", "credit_note", "struct_id","slip_ids","journal_id"])
             )
         from_date = run_data.get("date_start")
         to_date = run_data.get("date_end")
         struct_id = run_data.get("struct_id")
         slip_ids = run_data.get("slip_ids")
+        journal_id = run_data.get("journal_id")
+        print(run_data,"dataa")
+        print(struct_id,"struct!!")
+        if not journal_id:
+            raise UserError(_("Selecciona un Diario de Salarios correcto."))
         if not struct_id:
             raise UserError(_("Seleccionar una estructura salarial"))
         if not data["employee_ids"]:
@@ -67,6 +73,7 @@ class HrPayslipEmployees(models.TransientModel):
                 "date_to": to_date,
                 "credit_note": run_data.get("credit_note"),
                 "company_id": employee.company_id.id,
+                "journal_id":journal_id[0]
             }
             payslips += self.env["hr.payslip"].create(res)
 

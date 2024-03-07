@@ -2,10 +2,8 @@
 <odoo>
     <template id="recibo">
         <t t-call="web.html_container">
-            <t t-set="data_report_margin_top" t-value="2"/>
-            <t t-set="data_report_margin_bottom" t-value="1"/>
-            <t t-set="data_report_header_spacing" t-value="3"/>
-            <t t-set="data_report_dpi" t-value="110"/>
+
+
             <div class="article">
                 <style>
                     body {
@@ -140,7 +138,7 @@
                                         <strong>DPI:</strong>
                                     </td>
                                     <td>
-                                        <span t-esc="o.employee_id.identification_id"/>
+                                        <span t-esc="o.employee_id.vecindad_dpi"/>
                                     </td>
 
                                 </tr>
@@ -176,10 +174,10 @@
                                         <span>Dias laborados: <![CDATA[&nbsp;]]></span>
                                     </td>
 
-                                    <t t-foreach="o.line_ids" t-as="i">
+                                    <t t-foreach="o.input_line_ids" t-as="i">
                                         <t t-set="dias" t-value="0.0"/>
-                                        <t t-if="i.salary_rule_id.code == 'TDL'">
-                                            <t t-set="dias" t-value="i.total"/>
+                                        <t t-if="i.code == 'DL'">
+                                            <t t-set="dias" t-value="i.amount"/>
                                             <td>
                                                 <span t-esc="dias"/>
                                             </td>
@@ -295,7 +293,7 @@
                             <div style="text-align:center; margin-top:25px; position:absolute;">- - - - - - - - - - - -
                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                                - - - - - - - - - - - - - - - - - - - - -
+                                - - - - - - - - - - - - - - - - - - - - - - - - - -
                             </div>
 
                             <!--                            #################-->
@@ -396,10 +394,10 @@
                                         <span>Dias laborados: <![CDATA[&nbsp;]]></span>
                                     </td>
 
-                                    <t t-foreach="o.line_ids" t-as="i">
+                                     <t t-foreach="o.input_line_ids" t-as="i">
                                         <t t-set="dias" t-value="0.0"/>
-                                        <t t-if="i.salary_rule_id.code == 'TDL'">
-                                            <t t-set="dias" t-value="i.total"/>
+                                        <t t-if="i.code == 'DL'">
+                                            <t t-set="dias" t-value="i.amount"/>
                                             <td>
                                                 <span t-esc="dias"/>
                                             </td>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="contr_report_record">
+    <template id="contr_report_record_resig">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
@@ -32,7 +32,7 @@
                             desempeñando
                             el cargo de <span t-esc="o.employee_id.job_id.name"/>. La finalización de la relación laboral
                             se dio por
-                            voluntad patronal, el salario devengado fue el siguiente:
+                            voluntad del empleado, el salario devengado fue el siguiente:
                         </p>
                         <table style="width: 100%; text-align:center; margin-top:30px; margin-bottom: 25px; font-size:14px">
                             <tr>

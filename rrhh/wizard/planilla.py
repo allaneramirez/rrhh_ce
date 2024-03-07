@@ -41,7 +41,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                 'valign': 'vcenter',
                 'bg_color': '#D3D3D3',
                 'color': '#36454F',
-
             })
 
             title_format2 = libro.add_format({
@@ -105,7 +104,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                     # Por cada columna de la planilla configurada, traemos las reglas o entradas asociadas a la c
                     reglas = [x.name for x in c.regla_id]
                     entradas = [x.code for x in c.entrada_id]
-                    print(entradas, "entradas!!!")
                     columna += 1
                     if len(reglas) != 0:
                         ############# Reglas Salariales #############

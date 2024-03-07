@@ -40,47 +40,61 @@ class ReportRecibo(models.AbstractModel):
         salario_formateado = "Q{:,.2f}".format(salario)
         return salario_formateado
 
-    def horarios(self, horarios):
-        jornadas_text = 'De las jornadas de trabajo '
-        for calendar in horarios:
-
-            jornadas_text += calendar.name+":"
-            lunes = calendar.attendance_ids.filtered(lambda att: 'lunes' in att.name.lower())
-            sabado = calendar.attendance_ids.filtered(lambda att: 'sabado' in att.name.lower())
-            print()
-            print(sabado,"sabadoo!!")
-
-            from_hours = []
-            to_hours = []
-
-            horas_diarias = 0
-            for att in lunes:
-                horas_diarias += att.hour_to - att.hour_from
-                from_hours.append(att.hour_from)
-                to_hours.append(att.hour_to)
-            print(horas_diarias,"diarias!")
-            horas_diarias = math.ceil(horas_diarias)
-
-            horas_semanales = 0
-            for att in calendar.attendance_ids:
-                horas_semanales += att.hour_to - att.hour_from
-            print(horas_semanales,"semanales!")
-            horas_semanales = math.ceil(horas_semanales)
-
-            jornadas_text += f' será de {int(horas_diarias)} horas diarias y {int(horas_semanales)} horas a la semana así: '
-            primer_ciclo = True
-            for fromh, toh in zip(from_hours,to_hours):
-                if primer_ciclo:
-                    jornadas_text += f'de {"{:.0f}:00".format(fromh)} a {"{:.0f}:00".format(toh)}'
-                    primer_ciclo = False
-                else:
-                    jornadas_text += f' y de {"{:.0f}:00".format(fromh)} a {"{:.0f}:00".format(toh)} horas'
-
-            if sabado and calendar.name.lower() != 'nocturna':
-                for att in sabado:
-                    jornadas_text += f' excepto el día sábado que será de las {att.hour_from} am horas hasta las {att.hour_to} horas'
-
-            jornadas_text += f' para completar las {int(horas_semanales)} horas de la semana. '
+    def horarios(self, dep):
+        if dep.lower() == 'planta':
+            return ('De las jornadas de trabajo DIURNA CONTINUA: '
+                    'será de 8 horas diarias y 44 horas a la semana así: de 7:00 am a 15:00 horas, '
+                    'excepto el día sábado que será de las 7:00 am horas hasta las 11:00 '
+                    'horas para completar las 44 horas de la semana, NOCTURNA: será de 6 horas '
+                    'diarias y 36 horas a la semana así: de 18:00 pm a 24:00 pm horas para '
+                    'completar las 36 horas de la semana.')
+        else:
+            return ('5o. De las jornadas de trabajo DIURNA CONTINUA: será de 8 horas diarias '
+                    'y 44 horas a la semana así: de 7:30 am a 16:30 horas, excepto el día sábado '
+                    'que será de las 8:00 am horas hasta las 11:00 horas para completar las 44 horas '
+                    'de la semana. Si por conveniencia se pactare otro horario de ingreso con su jefe '
+                    'inmediato o bien de salida este horario debe de respetar la normativa legal '
+                    'completando las 44 horas de trabajo semanales, y un día de descanso remunerado. ')
+        # jornadas_text = 'De las jornadas de trabajo '
+        # for calendar in horarios:
+        #
+        #     jornadas_text += calendar.name+":"
+        #     lunes = calendar.attendance_ids.filtered(lambda att: 'lunes' in att.name.lower())
+        #     sabado = calendar.attendance_ids.filtered(lambda att: 'sabado' in att.name.lower())
+        #     print()
+        #     print(sabado,"sabadoo!!")
+        #
+        #     from_hours = []
+        #     to_hours = []
+        #
+        #     horas_diarias = 0
+        #     for att in lunes:
+        #         horas_diarias += att.hour_to - att.hour_from
+        #         from_hours.append(att.hour_from)
+        #         to_hours.append(att.hour_to)
+        #     print(horas_diarias,"diarias!")
+        #     horas_diarias = math.ceil(horas_diarias)
+        #
+        #     horas_semanales = 0
+        #     for att in calendar.attendance_ids:
+        #         horas_semanales += att.hour_to - att.hour_from
+        #     print(horas_semanales,"semanales!")
+        #     horas_semanales = math.ceil(horas_semanales)
+        #
+        #     jornadas_text += f' será de {int(horas_diarias)} horas diarias y {int(horas_semanales)} horas a la semana así: '
+        #     primer_ciclo = True
+        #     for fromh, toh in zip(from_hours,to_hours):
+        #         if primer_ciclo:
+        #             jornadas_text += f'de {"{:.0f}:00".format(fromh)} a {"{:.0f}:00".format(toh)}'
+        #             primer_ciclo = False
+        #         else:
+        #             jornadas_text += f' y de {"{:.0f}:00".format(fromh)} a {"{:.0f}:00".format(toh)} horas'
+        #
+        #     if sabado and calendar.name.lower() != 'nocturna':
+        #         for att in sabado:
+        #             jornadas_text += f' excepto el día sábado que será de las {att.hour_from} am horas hasta las {att.hour_to} horas'
+        #
+        #     jornadas_text += f' para completar las {int(horas_semanales)} horas de la semana. '
 
         return jornadas_text
 
