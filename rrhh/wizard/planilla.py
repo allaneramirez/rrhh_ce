@@ -121,7 +121,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                             ######## Entradas ############
                     elif len(entradas) !=0:
                         for r in l.input_line_ids:
-                            print(r.code,"codeeeee")
                             if r.code in entradas:
                                 cuentas_dict[departamento][0][str(c.name)] = r.amount
 

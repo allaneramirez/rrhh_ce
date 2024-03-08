@@ -3,6 +3,9 @@
 from odoo import models, fields, api
 import datetime
 import logging
+import xlsxwriter
+import io
+import base64
 
 class HrEmployeeBase(models.AbstractModel):
     _inherit = "hr.employee.base"
@@ -71,6 +74,41 @@ class HrEmployee(models.Model):
         res2 = records.name_get()
 
         return res1+res2
+
+    @api.model
+    def vacaciones(self, records):
+
+        # Hacer algo con los registros seleccionados
+        # for record in records:
+        #     print(record)
+        #     # Hacer alguna operación con cada registro
+        #     pass
+        f = io.BytesIO()
+        libro = xlsxwriter.Workbook(f)
+
+        header_format = libro.add_format(
+            {'font_size': 12, 'align': 'center', 'text_wrap': True, 'valign': 'center',
+             'bold': True, 'border': 1
+             })
+        hoja = libro.add_worksheet("Reporte de vacaciones")
+        hoja.merge_range('B2:G2', 'hola', header_format)
+        libro.close()
+        f.seek(0)
+        data = f.read()
+        f.close()
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': 'web/content/?model=ir.attachment&id=%s&filename_field=name&field=datas' % (
+                self.env['ir.attachment'].create({
+                    'name': 'Reporte_de_vacaciones.xlsx',
+                    'datas': base64.encodestring(data),
+                    'res_model': 'hr.employee',
+                    'res_id': self.id,
+                }).id),
+            'target': 'new',
+        }
+
 
     def _get_edad(self):
         for employee in self:

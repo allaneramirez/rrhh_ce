@@ -7,3 +7,4 @@ from . import contract_fire
 from . import contract_record
 from . import contract_record_resig
 from . import vac_report
+from . import vacation_report_control

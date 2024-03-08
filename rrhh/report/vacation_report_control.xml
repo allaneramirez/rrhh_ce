@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <report
+        id="report_vaction_report_control"
+        model="hr.employee"
+        string="Reporte Vacaciones"
+        report_type="xlsx"
+        name="rrhh.vacation_report_control"
+        file="rrhh.vacation_report_control"
+        attachment_use="False"
+    />
+</odoo>

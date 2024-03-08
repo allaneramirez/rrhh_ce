@@ -3,80 +3,96 @@
     <template id="contr_report_fire">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <div class="page" style="margin-top:-15px">
-                    <style>
-                        body {
-                        font-family: sans-serif;
-                        line-height: 1.6;
-                        font-size: 15px;
-                        padding:50px
-                        text-align:justify
-                        }
+                <t t-call="web.external_layout">
+                    <div class="page" style="margin-top:-15px">
+                        <style>
+                            body {
+                            font-family: sans-serif;
+                            line-height: 1.6;
+                            font-size: 15px;
+                            padding:50px
+                            text-align:justify
+                            }
 
-                    </style>
-                    <p style="text-align:end">Guatemala, <span t-esc="formato_fecha(o.date_end)"/></p>
-                    <p style="text-align:start">Estimado(a)<br/><span t-esc="o.employee_id.name.title()"/></p>
-                    <br/>
-                    <p style="text-align:justify">
-                        Por este medio hacemos de su conocimiento que, <span style="font-weight:bold">ABSORBENTES DE CENTROAMÉRICA S.A,</span>&#160;&#160; empresa en la
-                        cual labora desde el <span t-esc="formato_fecha(o.date_start)"/>, como promo vendedora, ha tomado la decisión de prescindir de
-                        sus servicios a partir del <span t-esc="formato_fecha(o.date_end)"/> por reestructuración del departamento.
-                    </p>
-                    <br/>
-                    <p style="text-align:justify">
-                        Por consiguiente y con base al artículo 260 del código de trabajo, se hará efectivo el pago de los
-                        días laborados pendientes si fuere el caso, prestaciones irrenunciables e indemnización correspondiente
-                        en un plazo de 30 días hábiles, se le solicita la devolución del equipo de trabajo asignado
-                        y demás pendientes de interés.
-                    </p>
-                    <br/>
-                    <p>
-                        En nombre de <span style="font-weight:bold">ABSORBENTES DE CENTROAMÉRICA S.A,</span>   agradece sus servicios y esfuerzos prestados durante
-                        la relación laboral.
-                    </p>
-                    <br/>
-                    <br/>
-                    <p>Atentamente,</p>
-                    <table style="width: 100%; text-align:center; margin-top:60px; margin-bottom: 25px; font-size:12px">
-                        <tr>
-                            <t t-if="o.employee_id.parent_id">
+                        </style>
+                        <p style="text-align:end">Guatemala,
+                            <span t-esc="formato_fecha(o.date_end)"/>
+                        </p>
+                        <p style="text-align:start">Estimado(a)
+                            <br/>
+                            <span t-esc="o.employee_id.name.title()"/>
+                        </p>
+                        <br/>
+                        <p style="text-align:justify">
+                            Por este medio hacemos de su conocimiento que, <span style="font-weight:bold">ABSORBENTES DE
+                            CENTROAMÉRICA S.A,</span>&#160;&#160; empresa en la
+                            cual labora desde el<span t-esc="formato_fecha(o.date_start)"/>, como<span
+                                t-esc="o.employee_id.job_id.name"/>, ha tomado la decisión de prescindir de
+                            sus servicios a partir del
+                            <span t-esc="formato_fecha(o.date_end)"/>
+                            por reestructuración del departamento.
+                        </p>
+                        <br/>
+                        <p style="text-align:justify">
+                            Por consiguiente y con base al artículo 260 del código de trabajo, se hará efectivo el pago
+                            de los
+                            días laborados pendientes si fuere el caso, prestaciones irrenunciables e indemnización
+                            correspondiente
+                            en un plazo de 30 días hábiles, se le solicita la devolución del equipo de trabajo asignado
+                            y demás pendientes de interés.
+                        </p>
+                        <br/>
+                        <p>
+                            En nombre de <span style="font-weight:bold">ABSORBENTES DE CENTROAMÉRICA S.A,</span>   agradece
+                            sus servicios y esfuerzos prestados durante
+                            la relación laboral.
+                        </p>
+                        <br/>
+                        <br/>
+                        <p>Atentamente,</p>
+                        <table style="width: 100%; text-align:center; margin-top:60px; margin-bottom: 25px; font-size:12px">
+                            <tr>
+                                <t t-if="o.employee_id.parent_id">
+                                    <td style="width: 50%;">
+
+                                        <p>f._____________________________________</p>
+                                        <span t-esc="o.employee_id.parent_id.name.title()"/>
+                                    </td>
+                                </t>
+                                <t t-if="o.employee_id.parent_id">
+                                    <td style="width: 50%;">
+
+                                        <p>f._____________________________________</p>
+                                        <p>
+                                            <span t-esc="capitalize(o.employee_id.coach_id.name)"/>
+                                        </p>
+                                    </td>
+                                </t>
+
+                            </tr>
+
+
+                        </table>
+                        <table style="width: 100%; text-align:center; margin-top:80px; margin-bottom: 25px; font-size:12px">
+                            <tr style="margin-top:100px">
                                 <td style="width: 50%;">
 
                                     <p>f._____________________________________</p>
-                                    <span t-esc="o.employee_id.parent_id.name.title()"/>
+                                    <p>
+                                        <span t-esc="capitalize(o.employee_id.name)"></span>
+                                    </p>
                                 </td>
-                            </t>
-                             <t t-if="o.employee_id.parent_id">
-                                 <td style="width: 50%;">
+                                <td style="width: 50%;">
 
-                                <p>f._____________________________________</p>
-                                <p>
-                                    <span t-esc="capitalize(o.employee_id.coach_id.name)"/>
-                                </p>
-                            </td>
-                             </t>
-
-                        </tr>
-
-
-                    </table>
-                    <table style="width: 100%; text-align:center; margin-top:80px; margin-bottom: 25px; font-size:12px">
-                        <tr style="margin-top:100px">
-                            <td style="width: 50%;">
-
-                                <p>f._____________________________________</p>
-                                <p><span t-esc="capitalize(o.employee_id.name)"></span></p>
-                            </td>
-                            <td style="width: 50%;">
-
-                                <p>f._____________________________________</p>
-                                <p>
-                                    Lcda. Libny González
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                                    <p>f._____________________________________</p>
+                                    <p>
+                                        Lcda. Libny González
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
             </t>
         </t>
     </template>

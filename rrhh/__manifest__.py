@@ -33,6 +33,7 @@
         'report/contract_report_fire.xml',
         'report/contract_report_record.xml',
         'report/report.xml',
+        'report/vacation_report_control.xml',
         'wizard/entradas_planillas_wizard.xml',
         'wizard/planilla.xml',
         'wizard/payslip_employees_view.xml',

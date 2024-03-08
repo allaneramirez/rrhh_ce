@@ -26,11 +26,11 @@
                     <h3 style="text-align:center;">
                         CONTRATO INDIVIDUAL DE TRABAJO
                     </h3>
-                    <p style="text-align:justify">Yo
+                    <p style="text-align:justify">Yo Juan José Fernando Lira Reyna
 <!--                        <span t-esc="o.employee_id.contract_id.hr_responsible_id.name"/>-->
-                        de Profesión
+                        de Profesión Licenciado en Administración de Empresas
 <!--                        <span t-esc="o.employee_id.contract_id.hr_responsible_id.profesion"/>-->
-                        de
+                        de Cincuenta y seis
 <!--                        <span t-esc="a_letras(o.employee_id.contract_id.hr_responsible_id.edad)"/>-->
                         años de edad, sexo masculino,
                         casado, guatemalteco con domicilio para recibir notificaciones en veintinueve calle tres guion
@@ -58,9 +58,9 @@
                         Hacia la capital, referencia puente Km. 22 zona 10 Villa Nueva, Guatemala.
                     </p>
                     <p>4o. La duración del presente contrato es:
-                        <span t-esc="'Indefinido' if o.employee_id.contract_id.tipo_contrato == 1 else 'Definido'"/>
+                        <span t-esc="'Indefinido' if o.employee_id.contract_id.temporalidad_contrato == 1 else 'Indefinido'"/>
                     </p>
-                    <p>5o. <span t-esc="horarios(o.employee_id.department_id.name)"/></p>
+                    <p><span t-esc="horarios(o.employee_id.department_id.name)"/></p>
                     <p>6o. El salario será así:
                         <span t-esc="salario_a_letras(o.employee_id.contract_id.wage)"/>
                         (<span t-esc="salario_formateado(o.employee_id.contract_id.wage)"/>) mensuales de sueldo base
@@ -132,8 +132,6 @@
                     <p style="font-size:11px">mantenerse a disposición de las autoridades de Trabajo, en cualquier revisión que se practique y deberá llevar la autorización electrónica correspondiente.
 </p>
                 </div>
-
-
             </t>
         </t>
     </template>

@@ -36,8 +36,6 @@ class HrPayslipEmployees(models.TransientModel):
         struct_id = run_data.get("struct_id")
         slip_ids = run_data.get("slip_ids")
         journal_id = run_data.get("journal_id")
-        print(run_data,"dataa")
-        print(struct_id,"struct!!")
         if not journal_id:
             raise UserError(_("Selecciona un Diario de Salarios correcto."))
         if not struct_id:

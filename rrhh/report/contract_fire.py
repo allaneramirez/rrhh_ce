@@ -14,6 +14,7 @@ class ReportRecibo(models.AbstractModel):
             year, month, day = fecha.split("-")
             year = int(year)
             month = int(month)
+            print(month,"month!!")
             day = int(day)
             date_in_words = self.a_letras(day)+" de "+a_letras.mes_a_letras(month)+" de "+self.a_letras(year)
             return date_in_words
@@ -21,7 +22,9 @@ class ReportRecibo(models.AbstractModel):
     def formato_fecha(self, fecha):
         if fecha:
             mes = fecha.month
+            print(mes,"mes")
             mes_letras = a_letras.mes_a_letras(mes)
+            print(mes_letras,"mes!!")
             # Obtener el nombre del mes y formatear la fecha
             return fecha.strftime(f'%d de {mes_letras} de %Y')
         else:
