@@ -15,6 +15,18 @@ class HrEmployeeBase(models.AbstractModel):
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    SALARIO_CHOICES = [
+        ('1', 'Salario base mensual'),
+        ('2', 'Salario base mensual + extraordinario'),
+        ('3', 'Salario por día'),
+        ('4', 'Salario por período + extraordinario'),
+        ('5', 'Salario a destajo'),
+        ('6', 'Salario por producción'),
+        ('7', 'Salario por comisión'),
+        ('8', 'Salario base mensual + comisiones (mixto)'),
+        ('9', 'Salario por período + comisiones')
+    ]
+
     numero_liquidacion = fields.Char('Numero o identificacion de liquidacion',groups="hr.group_hr_user")
     codigo_centro_trabajo = fields.Char('Codigo de centro de trabajo asignado',groups="hr.group_hr_user")
     codigo_ocupacion = fields.Char('Codigo ocupacion',groups="hr.group_hr_user")
@@ -66,6 +78,13 @@ class HrEmployee(models.Model):
     apellido_casada = fields.Char('Apellido casada',groups="hr.group_hr_user")
     centro_trabajo_id = fields.Many2one('res.company.centro_trabajo',strin='Centro de trabajo',groups="hr.group_hr_user")
     cod_est_civil = fields.Char('Codigo Estado Civil',groups="hr.group_hr_user")
+    #IGSS
+    tipo_planilla_id = fields.Many2one('res.company.tipo_planilla', string='Tipo de Planilla')
+    codigo_ocupacion_igss = fields.Char('Codigo ocupacion Igss',groups="hr.group_hr_user")
+    tipo_salario = fields.Selection(SALARIO_CHOICES, string='Tipo de Salario')
+    tiempo_contrato = fields.Selection([('TP', 'Tiempo Parcial'),
+                                        ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato', default='TC')
+
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         res1 = super(HrEmployee, self).name_search(name, args, operator=operator, limit=limit)

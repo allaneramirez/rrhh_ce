@@ -12,8 +12,11 @@
                             <group string="IGSS">
                                 <field name="numero_liquidacion"/>
                                 <field name="codigo_centro_trabajo"/>
-                                <field name="codigo_ocupacion"/>
+                                <field name="codigo_ocupacion_igss"/>
                                 <field name="condicion_laboral"/>
+                                <field name="tipo_planilla_id"/>
+                                <field name="tipo_salario"/>
+                                <field name="tiempo_contrato"/>
                             </group>
                             <group string="Información de Pago">
                                 <field name="diario_pago_id"/>
@@ -34,6 +37,7 @@
                                 <field name="nit"/>
                                 <field name="nivel_academico"/>
                                 <field name="profesion"/>
+                                <field name="codigo_ocupacion"/>
                                 <field name="etnia"/>
                                 <field name="comunidad_ling"/>
                                 <field name="idioma"/>

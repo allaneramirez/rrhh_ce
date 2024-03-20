@@ -112,6 +112,19 @@
                                     <field name="codigo_actividad_economica"/>
                                 </tree>
                             </field>
+                            <label for="tipo_planilla_ids" string="Tipos de planilla"/>
+                            <field name="tipo_planilla_ids">
+                                <tree string="Planillas" editable="bottom">
+                                    <field name="ident_tipo_planilla"/>
+                                    <field name="nombre"/>
+                                    <field name="tipo_afiliado"/>
+                                    <field name="periodo_planilla"/>
+                                    <field name="departamento"/>
+                                    <field name="act_economica"/>
+                                    <field name="clase_planilla"/>
+                                    <field name="tiempo_contrato"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </data>

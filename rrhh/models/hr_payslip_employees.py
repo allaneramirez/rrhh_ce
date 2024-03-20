@@ -15,13 +15,12 @@ class HrPayslipEmployees(models.TransientModel):
     def _onchange_department_id(self):
         if self.department_id:
             department_ids = self.env['hr.department'].search([('id', 'child_of', self.department_id.id)]).ids
-            employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
+            employees = self.env['hr.employee'].search([('department_id', 'in', department_ids),('contract_id.state', '=', 'open')])
             self.employee_ids = [(6, 0, employees.ids)]
         else:
             self.employee_ids = [(5,)]
 
     def compute_sheet(self):
-        print("que pedoooooo?")
         payslips = self.env["hr.payslip"]
         [data] = self.read()
         active_id = self.env.context.get("active_id")
@@ -49,7 +48,7 @@ class HrPayslipEmployees(models.TransientModel):
             # Cambiar el estado de las liquidaciones a 'Borrador' para poder eliminarlos
             payslips_to_reset.write({'state': 'draft'})
             payslips_to_reset.unlink()
-        employees = self.env['hr.employee'].search([('department_id', '=', self.department_id.id)])
+        employees = self.env['hr.employee'].search([('department_id', '=', self.department_id.id),('contract_id.state', '=', 'open')])
 
         for employee in employees:
             slip_data = self.env["hr.payslip"].get_payslip_vals(

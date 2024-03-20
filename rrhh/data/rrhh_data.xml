@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <data noupdate="1">
+
     <!--    ####################### Otro tipo de entradas ################ -->
     <record id="DL" model="hr.payslip.input.type.2">
         <field name="name">Dias Laborados</field>
@@ -522,4 +524,5 @@ result = categories.SB
         />
         <field name="company_id" ref="base.main_company"/>
     </record>
+        </data>
 </odoo>

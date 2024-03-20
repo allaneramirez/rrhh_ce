@@ -7,32 +7,24 @@
         <field name="arch" type="xml">
             <form string="Planillas">
                 <group>
-                    <separator colspan="4" string="Tipo de planilla"/>
+                    <separator colspan="4" string="Plailla Produccion/Pruebas"/>
                     <group>
-                        <field name="identificacion_tipo_planilla"/>
-                        <field name="nombre_tipo_planilla"/>
-                        <field name="tipo_afiliados"/>
-                        <field name="periodo_planilla"/>
+                        <field name="tipo_planilla"/>
                     </group>
-                    <group>
-                        <field name="departamento_republica"/>
-                        <field name="actividad_economica"/>
-                        <field name="clase_planilla"/>
-                    </group>
+
                 </group>
-                <group>
-                    <separator colspan="4" string="Liquidaciones"/>
-                    <group>
+                <label for="relacion_ids" string="Liquidaciones"/>
+                <field name="relacion_ids">
+                    <tree  editable="bottom">
                         <field name="numero_liquidacion"/>
-                        <field name="tipo_planilla_liquidacion"/>
+                        <field name="tipo_planilla_id"/>
                         <field name="fecha_inicial"/>
-                    </group>
-                    <group>
                         <field name="fecha_final"/>
-                        <field name="tipo_liquidacion"/>
-                        <field name="numero_nota_cargo"/>
-                    </group>
-                </group>
+                        <field name="planilla_c_o"/>
+                        <field name="numero_nota_recargo"/>
+
+                    </tree>
+                </field>
                 <group>
                     <group>
                         <field name="archivo" filename="name" readonly="1"/>
@@ -56,5 +48,5 @@
         <field name="binding_model_id" ref="model_hr_payslip_run"/>
 
     </record>
-        
+
 </odoo>
