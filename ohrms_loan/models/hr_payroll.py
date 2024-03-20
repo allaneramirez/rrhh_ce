@@ -24,12 +24,6 @@ class HrPayslip(models.Model):
                 return
             # Regla salarial con Codigo LO dentro de la estructura
 
-
-
-            # loan_paslip_line = data.line_ids.filtered(
-            #     lambda y: y.salary_rule_id.code == 'LO'
-            # )
-
             # Get Prestamo
             loans = self.env['hr.loan'].search([
                 ('employee_id', '=', data.employee_id.id),
@@ -89,3 +83,14 @@ class HrPayslip(models.Model):
                 line.loan_line_id.paid = True
                 line.loan_line_id.loan_id._compute_loan_amount()
         return super(HrPayslip, self).action_payslip_done()
+
+
+    def action_payslip_draft(self):
+        loan_lines = self.env['hr.loan.line'].search([
+            ('payslip_id', 'in', self.ids),
+            ('amount', '!=', 0.0)
+        ])
+
+        if loan_lines:
+            loan_lines.write({'paid': False})
+        return super(HrPayslip, self).action_payslip_draft()
