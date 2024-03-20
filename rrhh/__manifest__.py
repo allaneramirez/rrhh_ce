@@ -17,7 +17,7 @@
 
     'data': [
         'security/ir.model.access.csv',
-        # 'data/rrhh_data.xml',
+        'data/rrhh_data.xml',
         'views/payslip_input_type_view.xml',
         'views/hr_contract_views.xml',
         'views/hr_views.xml',
