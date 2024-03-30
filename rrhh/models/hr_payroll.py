@@ -207,14 +207,17 @@ class HrPayslip(models.Model):
                 return total_input
     def compute_sheet(self):
         res = super(HrPayslip, self).compute_sheet()
+        # SI TENEMOS UNA AUSENCIA CREADA RELACIONADA LA ELIMINAMOS ANTES
         if self.leave_id:
             self.leave_id.unlink()
 
+        # SI HEMOS SELECCIONADO UNA ASGINACION
         if self.leave_allocation_id:
             entry_code = 'VACREZ'
 
             old_input = self.input_line_ids.filtered(lambda input: input.code == entry_code)
             old_input.unlink() if old_input else None
+            # CREAMOS UNA NUEVA AUSENCIA
             leave = self.env['hr.leave'].create({
                 'name': self.leave_allocation_id.name,
                 'employee_id': self.employee_id.id,

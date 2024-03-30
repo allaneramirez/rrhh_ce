@@ -197,7 +197,6 @@ class rrhh_informe_empleador(models.TransientModel):
         return self.env.ref('rrhh.action_informe_empleador').report_action([], data=datas)
 
     def dias_trabajados_anual(self, empleado_id, anio, payslips):
-        print(payslips,"que pedo")
         dias_laborados = 0
         for pay in payslips:
             for input in pay.input_line_ids:
@@ -355,7 +354,13 @@ class rrhh_informe_empleador(models.TransientModel):
                     nominas_lista = []
                     contrato = self.env['hr.contract'].search(
                         [('employee_id', '=', empleado.id), ('state', '=', 'open')])
-                    nomina_id = self.env['hr.payslip'].search([['employee_id', '=', empleado.id],['struct_id.name',"=","2da Quincena"],['state','=','done']])
+                    estructuras_ids = ['Bono 14', 'Aguinaldo', 'Vacaciones', 'Vacaciones Rezagadas',
+                                       'Finiquito Laboral']
+
+                    nomina_id = self.env['hr.payslip'].search([('employee_id', '=', id), '|',
+                                                               ('struct_id.name', 'ilike', '2da Quincena'),
+                                                               ('struct_id', 'in', estructuras_ids),
+                                                               ('state', '=', 'done')], order="date_to asc")
                     dias_trabajados = 0
                     salario_anual_nominal = 0
                     bonificacion = 0
@@ -499,7 +504,7 @@ class rrhh_informe_empleador(models.TransientModel):
                     hoja_empleado.write(fila, 25, contrato.date_start if contrato.date_start  else '', formato_fecha)
                     hoja_empleado.write(fila, 26, contrato.fecha_reinicio_labores if contrato.fecha_reinicio_labores  else '',formato_fecha)
                     hoja_empleado.write(fila, 27, contrato.date_end if contrato.date_end else '',formato_fecha)
-                    hoja_empleado.write(fila, 28, empleado.puesto if empleado.puesto else '')
+                    hoja_empleado.write(fila, 28, empleado.codigo_ocupacion if empleado.codigo_ocupacion else '')
                     hoja_empleado.write(fila, 29, empleado.jornada_trabajo)
 
                     # hoja_empleado.write(fila, 25, contrato.structure_type_id.default_struct_id.name)

@@ -217,7 +217,7 @@
                                     </t>
                                 </tr>
                             </table>
-                            <br/>
+
                             <!--                        ################## Ingresos y Deducciones ################# -->
                             <div class="row" style="width:100%;margin-top:20px; font-size:14px;">
                                 <!--                            <span t-set="detail" t-value="o.get_payslip_data()"/>-->
@@ -437,12 +437,13 @@
                                     </tr>
                                 </tr>
                             </table>
-                            <br/>
+
                             <!--                        ################## Ingresos y Deducciones ################# -->
-                            <div class="row" style="width:100%;margin-top:15px; font-size:14px;">
+<!--                            <div class="row" style="width:100%;margin-top:15px; font-size:14px;">-->
                                 <!--                            <span t-set="detail" t-value="o.get_payslip_data()"/>-->
                                 <!--                            <span t-set="total_line_data" t-value="o.get_payslip_data(flag=1)"/>-->
-                                <table>
+                                <table class="table table-sm table-condensed"
+                                   style="width:100%;margin-top:5px; font-size:14px;">
                                     <tr id="header-line">
                                         <th style="width:25%">Ingresos</th>
                                         <th style="width:25%" class="text-right">Monto</th>
@@ -501,7 +502,7 @@
                                     </tr>
                                 </table>
 
-                            </div>
+<!--                            </div>-->
                             <div class="signature"
                             >
                                 <p>Firma: ______________________________________________</p>

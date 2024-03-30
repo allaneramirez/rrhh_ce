@@ -36,7 +36,7 @@
                                 <field name="irtra"/>
                                 <field name="nit"/>
                                 <field name="nivel_academico"/>
-                                <field name="profesion"/>
+                                <field name="profesion" string="Titulo o Diploma"/>
                                 <field name="codigo_ocupacion"/>
                                 <field name="etnia"/>
                                 <field name="comunidad_ling"/>

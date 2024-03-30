@@ -84,6 +84,7 @@ class rrhh_igss_wizard(models.TransientModel):
             empleados = {}
             suspensiones = []
             licencia = []
+
             for payslip_run in w.payslip_run_id:
                 # POR CADA NOMINA EN EL LOTE
                 for slip in payslip_run.slip_ids:
@@ -166,8 +167,8 @@ class rrhh_igss_wizard(models.TransientModel):
                     datos += '\r\n'
                     # OBTENEMOS TODAS LAS AUSENCIAS EN LAS FECHAS INGRESADAS
                     ausencias = self.env['hr.leave'].search(
-                        [('employee_id', '=', empleado['empleado_id']), ('request_date_from', '>=', self.payslip_run_id.date_start),
-                         ('request_date_to', '<=', self.payslip_run_id.date_end), ('state', '=', 'validate')])
+                        [('employee_id', '=', empleado['empleado_id']), ('request_date_from', '>=', self.payslip_run_id[0].date_start),
+                         ('request_date_to', '<=', self.payslip_run_id[0].date_end), ('state', '=', 'validate')])
 
                     if ausencias:
                         # OBTENEMOS EL CODIGO POR CADA REGLA CONFIUGRADA EN LA COMPANIA RELACIONADA AL IGGS

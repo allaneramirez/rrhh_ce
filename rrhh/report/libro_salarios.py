@@ -8,11 +8,12 @@ from datetime import datetime, date, time, timedelta
 from odoo.fields import Date, Datetime
 import logging
 
+
 class ReportLibroSalarios(models.AbstractModel):
     _name = 'report.rrhh.libro_salarios'
     _description = 'Reporte Libro Salarios GT'
 
-    def _get_contrato(self,id):
+    def _get_contrato(self, id):
         contract = False
         contrato_id = self.env['hr.contract'].search([['employee_id', '=', id]])
         if len(contrato_id) > 1:
@@ -21,19 +22,19 @@ class ReportLibroSalarios(models.AbstractModel):
                     contract = contrato
         else:
             contract = contrato_id
-        return {'fecha_ingreso':contract.date_start,'fecha_finalizacion': contract.date_end}
+        return {'fecha_ingreso': contract.date_start, 'fecha_finalizacion': contract.date_end}
 
-    def _get_empleado(self,id):
+    def _get_empleado(self, id):
         empleado_id = self.env['hr.employee'].search([['id', '=', id]])
         empleado = 0
         if empleado_id:
             empleado = empleado_id
         else:
-            empleado_id = self.env['hr.employee'].search([['id', '=', id],['active', '=', False]])
+            empleado_id = self.env['hr.employee'].search([['id', '=', id], ['active', '=', False]])
             empleado = empleado_id
         return empleado
 
-    def dias_trabajados(self,employee_id,nomina_id):
+    def dias_trabajados(self, employee_id, nomina_id):
         contracts = False
         dias = 0
         if employee_id.contract_id:
@@ -48,7 +49,7 @@ class ReportLibroSalarios(models.AbstractModel):
         #         # adjuntamos el nombre de la ausencia que tiene una entrada para restar
         #         ausencias_restar.append(ausencia.name)
         for dias in nomina_id.worked_days_line_ids:
-            #Si el codigo de la entrada de trabajo esta en las ausencias a restar, sumamos los dias que hay que restar
+            # Si el codigo de la entrada de trabajo esta en las ausencias a restar, sumamos los dias que hay que restar
             # OJO entrada de trabajo es diferente a 'otro tipo de entrada'
             if dias.code in ausencias_restar:
                 dias_ausentados_restar += dias.number_of_days
@@ -61,13 +62,19 @@ class ReportLibroSalarios(models.AbstractModel):
 
         if contracts.date_start and nomina_id.date_from <= contracts.date_start <= nomina_id.date_to:
             # obtenemos el total dias laborados en el mes de la primera nomina
-            dias_laborados = reference_calendar.get_work_duration_data(Datetime.from_string(contracts.date_start), Datetime.from_string(nomina_id.date_to), compute_leaves=False,domain = False)
+            dias_laborados = reference_calendar.get_work_duration_data(Datetime.from_string(contracts.date_start),
+                                                                       Datetime.from_string(nomina_id.date_to),
+                                                                       compute_leaves=False, domain=False)
             # cambio de menor o igual a 30
-            dias = (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados['days'] + 1 - dias_ausentados_restar) <= 30 else 30
+            dias = (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados[
+                                                                                 'days'] + 1 - dias_ausentados_restar) <= 30 else 30
             # si es la ultima nomina
         elif contracts.date_end and nomina_id.date_from <= contracts.date_end <= nomina_id.date_to:
-            dias_laborados = reference_calendar.get_work_duration_data(Datetime.from_string(nomina_id.date_from), Datetime.from_string(contracts.date_end), compute_leaves=False,domain = False)
-            dias = (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados['days'] + 1 - dias_ausentados_restar) <= 30 else 30
+            dias_laborados = reference_calendar.get_work_duration_data(Datetime.from_string(nomina_id.date_from),
+                                                                       Datetime.from_string(contracts.date_end),
+                                                                       compute_leaves=False, domain=False)
+            dias = (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados[
+                                                                                 'days'] + 1 - dias_ausentados_restar) <= 30 else 30
         else:
             if contracts.schedule_pay == 'monthly':
                 dias = 30 - dias_ausentados_restar
@@ -75,11 +82,12 @@ class ReportLibroSalarios(models.AbstractModel):
                 dias = 15 - dias_ausentados_restar
         return dias
 
-    def _get_dias_laborados_netos(self,empleado,fecha_inicio,fecha_fin):
+    def _get_dias_laborados_netos(self, empleado, fecha_inicio, fecha_fin):
         work = -1
         trabajo = -1
         dias_trabajados = 0
-        nominas = self.env['hr.payslip'].search([['employee_id','=',empleado.id],['date_from', '>=', fecha_inicio],['date_to','<=',fecha_fin]])
+        nominas = self.env['hr.payslip'].search(
+            [['employee_id', '=', empleado.id], ['date_from', '>=', fecha_inicio], ['date_to', '<=', fecha_fin]])
         for nomina in nominas:
             trabajo = 0
             for linea in nomina.worked_days_line_ids:
@@ -99,29 +107,34 @@ class ReportLibroSalarios(models.AbstractModel):
 
         return dias_trabajados
 
-    def _get_domingos_trabajados(self,fecha_inicio,fecha_fin):
+    def _get_domingos_trabajados(self, fecha_inicio, fecha_fin):
         cantidad_domingos = 0
         contador = 0
-        fecha_desde =  datetime.strptime(str(fecha_inicio),"%Y-%m-%d")
-        fecha_hasta = datetime.strptime(str(fecha_fin),"%Y-%m-%d")
+        fecha_desde = datetime.strptime(str(fecha_inicio), "%Y-%m-%d")
+        fecha_hasta = datetime.strptime(str(fecha_fin), "%Y-%m-%d")
         now = datetime.now()
         cantidad_dias = fecha_hasta - fecha_desde
         cantidad_dias = cantidad_dias.days
         dias_a_trabajar = 0
         while (contador <= cantidad_dias):
             # aumentamos dia por dia a la fecha de inicio
-            otro_tiempo  = fecha_desde + timedelta(days = contador)
+            otro_tiempo = fecha_desde + timedelta(days=contador)
             if (otro_tiempo.strftime("%A") == 'Sunday'):
                 cantidad_domingos += 1
-            contador +=1
+            contador += 1
         return cantidad_domingos
 
-    def _get_nominas(self,id,anio):
-        nomina_id = self.env['hr.payslip'].search([('employee_id', '=', id),('struct_id.name',"=","2da Quincena")],order="date_to asc")
+    def _get_nominas(self, id, anio):
+        estructuras_ids = ['Bono 14','Aguinaldo','Vacaciones','Vacaciones Rezagadas','Finiquito Laboral']
+
+        nomina_id = self.env['hr.payslip'].search([('employee_id', '=', id), '|',
+                                                   ('struct_id.name', 'ilike', '2da Quincena'),
+                                                   ('struct_id', 'in', estructuras_ids), ('state','=','done')], order="date_to asc")
+
         nominas_lista = []
         numero_orden = 0
         for nomina in nomina_id:
-            nomina_anio = int(datetime.strptime(str(nomina.date_to),'%Y-%m-%d').date().strftime('%Y'))
+            nomina_anio = int(datetime.strptime(str(nomina.date_to), '%Y-%m-%d').date().strftime('%Y'))
             contiene_bono = False
             if anio == nomina_anio:
                 salario = 0
@@ -152,17 +165,22 @@ class ReportLibroSalarios(models.AbstractModel):
 
                 employee = self.env['hr.employee'].browse(id)
                 calendar = employee.contract_id.resource_calendar_id
-                dias_laborados = calendar.get_work_duration_data(Datetime.from_string(nomina.date_from), Datetime.from_string(nomina.date_to), compute_leaves=False,domain = False)
+                dias_laborados = calendar.get_work_duration_data(Datetime.from_string(nomina.date_from),
+                                                                 Datetime.from_string(nomina.date_to),
+                                                                 compute_leaves=False, domain=False)
                 dias_laborados_netos = 0
                 # Si tiene mas de 150 dias de trabajo entre la fecha de la nomina, es por que se paga bono14 o aguinaldo
                 if dias_laborados['days'] > 150:
                     if nomina.date_from >= nomina.contract_id.date_start:
                         # Dias Laborados de la nomina que tiene el rango mayor a 150, porque debio haber seleccionado todo el rango
-                        dias_laborados_netos =  dias_laborados['days'] + 1
+                        dias_laborados_netos = dias_laborados['days'] + 1
                         # Si la fecha de contrato esta entre la fecha de la planilla no se le pagan los 365 dias,
                         # entonces se calculan los días entre el contrato y fecha final de planilla
                     if nomina.date_from <= nomina.contract_id.date_start <= nomina.date_to:
-                        dias_laborados_netos = calendar.get_work_duration_data(Datetime.from_string(nomina.contract_id.date_start), Datetime.from_string(nomina.date_to),compute_leaves=False,domain = False)['days']+1
+                        dias_laborados_netos = \
+                            calendar.get_work_duration_data(Datetime.from_string(nomina.contract_id.date_start),
+                                                            Datetime.from_string(nomina.date_to), compute_leaves=False,
+                                                            domain=False)['days'] + 1
                 """recorre cada linea de los dias trabajados y verifica el codigo, se define la variable
                 de los dias trabajados segun el codigo que se esté usando, en este caso debería ser TRABAJO100, 
                 (Investigar como esta calculando los dias el codigo TRABAJO100)"""
@@ -185,11 +203,11 @@ class ReportLibroSalarios(models.AbstractModel):
                 for linea in nomina.worked_days_line_ids:
                     if linea.code == 'VAC':
                         dias_trabajados += linea.number_of_days
-
+                salario = employee.contract_id.wage
                 for linea in nomina.line_ids:
                     # en la compania definimos las reglas salariales que se usarán para el calculo del salario en el reporte
-                    if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
-                        salario += linea.total
+                    # if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
+                    #     salario += linea.total
                     # si la regla salarial esta en la configuracion de la compania como extra ordinaria
                     if linea.salary_rule_id.id in nomina.company_id.extras_ordinarias_ids.ids:
                         for entrada in nomina.input_line_ids:
@@ -241,28 +259,28 @@ class ReportLibroSalarios(models.AbstractModel):
                     # regla relacionada a las devoluciones de ISR
                     if linea.salary_rule_id.id in nomina.company_id.devolucion_isr_otro_ids.ids:
                         dev_isr_otro += linea.total
-                print(numero_orden,"nominaaa")
                 dias_trabajados = int(dias_laborados_netos) if dias_laborados_netos > 0 else int(dias_trabajados)
                 # Horas ordinarios, total de dias trabajados por 8
-                ordinarias = dias_trabajados*8 if dias_trabajados <= 31 else 0
-                domingos = self._get_domingos_trabajados(nomina.date_from,nomina.date_to)
+                ordinarias = dias_trabajados * 8 if dias_trabajados <= 31 else 0
+                domingos = self._get_domingos_trabajados(nomina.date_from, nomina.date_to)
                 sueldo_diario = 0
                 if dias_trabajados > 0:
                     # SALARIO DEL MES/30, para mi deberia de usera el salari ordinario ya que se lo restamos al mismo
-                    sueldo_diario = salario/30
+                    # sueldo_diario = salario/30
+                    sueldo_diario = ordinario / 30
                 else:
                     sueldo_diario = 0
                 # Salario de los asuetos y/o domingos
                 septimos_asuetos = sueldo_diario * domingos
                 # restamos al ordinario los asuetos para que no sume de mas
-                ordinario_final = ordinario - septimos_asuetos
+                ordinario_final = (ordinario - septimos_asuetos)
                 ordinario = ordinario_final
                 # total_descuentos = igss + isr + anticipos
                 otras_deducciones = anticipos
                 total_deducciones = igss + otras_deducciones + isr
                 bono_agui_indem = bono + aguinaldo + indemnizacion
                 numero_orden += 1
-                total_salario_devengado =  ordinario + extra_ordinario + septimos_asuetos + vacaciones + otros_salarios
+                total_salario_devengado = ordinario + extra_ordinario + septimos_asuetos + vacaciones + otros_salarios
                 nominas_lista.append({
                     'orden': numero_orden,
                     'fecha_inicio': nomina.date_from,
@@ -302,7 +320,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'bono_agui_indem': bono_agui_indem,
 
                     # 'liquido_recibir': total_salario_devengado + boni_incentivo_decreto +dev_isr_otro
-                    'liquido_recibir': total_salario_devengado + total_deducciones +bono_agui_indem+ boni_incentivo_decreto + dev_isr_otro
+                    'liquido_recibir': total_salario_devengado + total_deducciones + bono_agui_indem + boni_incentivo_decreto + dev_isr_otro
                     # 'liquido_recibir': total_salario_devengado + total_deducciones + bono_agui_indem + decreto + fija + variable
                 })
         return nominas_lista
