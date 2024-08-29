@@ -115,8 +115,8 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 if c.sumar:
                                     cuentas_dict[departamento][0]['Liquido a recibir'] += r.total
                                 # # También, verifica si la sucursal no es 'False' antes de intentar acceder a la clave 'Sueldo Base' para agregar sueldo base
-                                if 'Sueldo Base' not in cuentas_dict.get(str(departamento), [])[0]:
-                                    cuentas_dict[departamento][0]['Sueldo Base'] = l.contract_id.wage
+                                # if 'Sueldo Base' not in cuentas_dict.get(str(departamento), [])[0]:
+                                #     cuentas_dict[departamento][0]['Sueldo Base'] = l.contract_id.wage
 
                             ######## Entradas ############
                     elif len(entradas) !=0:
