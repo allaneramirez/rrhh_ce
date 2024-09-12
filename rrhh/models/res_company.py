@@ -102,22 +102,22 @@ class res_company_centro_trabajo(models.Model):
     codigo_municipio = fields.Char('Código municipio')
     codigo_actividad_economica = fields.Char('Codigo actividad economica')
 
-    class res_company_tipo_planilla(models.Model):
-        _name = 'res.company.tipo_planilla'
-        _description = 'Tipo de Planilla (IGSS)'
-        _rec_name = 'nombre'
+class res_company_tipo_planilla(models.Model):
+    _name = 'res.company.tipo_planilla'
+    _description = 'Tipo de Planilla (IGSS)'
+    _rec_name = 'nombre'
 
-        company_id = fields.Many2one('res.company', 'Compañia')
-        ident_tipo_planilla = fields.Char('Identificación de Tipo de planilla')
-        nombre = fields.Char('Nombre o descripción del tipo de planilla')
-        tipo_afiliado = fields.Selection([('S', 'Sin IVS'),
-                                       ('C', 'Con IVS')], 'Tipo de planilla',default='C')
-        periodo_planilla = fields.Selection([('M', 'Mensual'),
-                                       ('C', 'Catorcenal'),('S', 'Semanal')], 'Perido de planilla',default='M')
-        departamento = fields.Char('Departamento')
-        act_economica = fields.Char('Actividad Economica')
-        clase_planilla = fields.Selection([('N', 'Normal'),
-                                             ('S', 'Sin Movimiento')], 'Clase de planilla', default='N')
-        tiempo_contrato = fields.Selection([('TP', 'Tiempo Parcial'),
-                                           ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato',default='TC')
+    company_id = fields.Many2one('res.company', 'Compañia')
+    ident_tipo_planilla = fields.Char('Identificación de Tipo de planilla')
+    nombre = fields.Char('Nombre o descripción del tipo de planilla')
+    tipo_afiliado = fields.Selection([('S', 'Sin IVS'),
+                                   ('C', 'Con IVS')], 'Tipo de planilla',default='C')
+    periodo_planilla = fields.Selection([('M', 'Mensual'),
+                                   ('C', 'Catorcenal'),('S', 'Semanal')], 'Perido de planilla',default='M')
+    departamento = fields.Char('Departamento')
+    act_economica = fields.Char('Actividad Economica')
+    clase_planilla = fields.Selection([('N', 'Normal'),
+                                         ('S', 'Sin Movimiento')], 'Clase de planilla', default='N')
+    tiempo_contrato = fields.Selection([('TP', 'Tiempo Parcial'),
+                                       ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato',default='TC')
 
