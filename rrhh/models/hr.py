@@ -79,11 +79,11 @@ class HrEmployee(models.Model):
     centro_trabajo_id = fields.Many2one('res.company.centro_trabajo',strin='Centro de trabajo',groups="hr.group_hr_user")
     cod_est_civil = fields.Char('Codigo Estado Civil',groups="hr.group_hr_user")
     #IGSS
-    tipo_planilla_id = fields.Many2one('res.company.tipo_planilla', string='Tipo de Planilla')
+    tipo_planilla_id = fields.Many2one('res.company.tipo_planilla', string='Tipo de Planilla', groups="hr.group_hr_user")
     codigo_ocupacion_igss = fields.Char('Codigo ocupacion Igss',groups="hr.group_hr_user")
-    tipo_salario = fields.Selection(SALARIO_CHOICES, string='Tipo de Salario')
+    tipo_salario = fields.Selection(SALARIO_CHOICES, string='Tipo de Salario', )
     tiempo_contrato = fields.Selection([('TP', 'Tiempo Parcial'),
-                                        ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato', default='TC')
+                                        ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato', default='TC', groups="hr.group_hr_user")
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
