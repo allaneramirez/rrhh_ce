@@ -75,10 +75,10 @@ class rrhh_planilla_wizard(models.TransientModel):
                 departamento = e.department_id.name
                 if departamento:
                     departamentos_empleados.add(departamento)
-                 for l in w.nomina_id.slip_ids:
-                     depa = l.employee_id.department_id.name
-                    if depa not in final_cuentas_dict:
-                        final_cuentas_dict[depa] = []
+            for l in w.nomina_id.slip_ids:
+                depa = l.employee_id.department_id.name
+                if depa not in final_cuentas_dict:
+                    final_cuentas_dict[depa] = []
 
             # Por cada nomina del lote
             for l in w.nomina_id.slip_ids:
