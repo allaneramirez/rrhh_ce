@@ -85,6 +85,13 @@ class HrEmployee(models.Model):
     tiempo_contrato = fields.Selection([('TP', 'Tiempo Parcial'),
                                         ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato', default='TC', groups="hr.group_hr_user")
 
+    # HISTORIAL DE SALARIO PRESTACIONES
+    historial_salario_ids = fields.One2many('rrhh.historial_salario', 'employee_id', string='Historial de salario',
+                                            groups="rrhh.rrhh_user_readonly")
+    salario_promedio = fields.Float(string="Salario Promedio")
+    dias_laborados_aguinaldo = fields.Float(string="Dias Laborados Aguinaldo")
+    dias_laborados_bono14 = fields.Float(string="Dias Laborados Bono 14")
+
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         res1 = super(HrEmployee, self).name_search(name, args, operator=operator, limit=limit)
