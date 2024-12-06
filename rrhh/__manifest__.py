@@ -43,6 +43,7 @@
         'wizard/rrhh_informe_empleador_view.xml',
         'wizard/rrhh_libro_salarios_view.xml',
         'wizard/igss.xml',
+        'wizard/historial_salarios.xml',
 ],
     'license': 'LGPL-3',
 }
