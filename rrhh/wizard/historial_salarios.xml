@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_rrhh_salario_historico" model="ir.ui.view">
+            <field name="name">Salario Historicor</field>
+            <field name="model">rrhh.historial_salarios_wizard</field>
+            <field name="arch" type="xml">
+            <form string="Calcuo de Salario Historico">
+                <group>
+                    <field name="salario_promedio"/>
+                    <field name="name" invisible="1"/>
+                    <field name="archivo" readonly="1" filename="name"/>
+                </group>
+
+                <footer>
+                    <button name="update" string="Actualizar" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+            </field>
+    </record>
+
+    <record id="action_salario_promedio" model="ir.actions.act_window">
+        <field name="name">Actualizar Salario Historico</field>
+        <field name="res_model">rrhh.historial_salarios_wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_rrhh_salario_historico"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_hr_employee"/>
+    </record>
+
+</odoo>
