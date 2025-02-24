@@ -357,7 +357,7 @@ class rrhh_informe_empleador(models.TransientModel):
                     estructuras_ids = ['Bono 14', 'Aguinaldo', 'Vacaciones', 'Vacaciones Rezagadas',
                                        'Finiquito Laboral']
 
-                    nomina_id = self.env['hr.payslip'].search([('employee_id', '=', id), '|',
+                    nomina_id = self.env['hr.payslip'].search([('employee_id', '=', empleado.id), '|',
                                                                ('struct_id.name', 'ilike', '2da Quincena'),
                                                                ('struct_id', 'in', estructuras_ids),
                                                                ('state', '=', 'done')], order="date_to asc")
