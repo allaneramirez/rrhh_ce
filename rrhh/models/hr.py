@@ -84,6 +84,7 @@ class HrEmployee(models.Model):
     tipo_salario = fields.Selection(SALARIO_CHOICES, string='Tipo de Salario', groups="hr.group_hr_user")
     tiempo_contrato = fields.Selection([('TP', 'Tiempo Parcial'),
                                         ('TC', 'Tiempo Commpleto')], 'Tiempo de contrato', default='TC', groups="hr.group_hr_user")
+    jubilado = fields.Boolean('Jubilado',default=False)
 
     # HISTORIAL DE SALARIO PRESTACIONES
     historial_salario_ids = fields.One2many('rrhh.historial_salario', 'employee_id', string='Historial de salario',
