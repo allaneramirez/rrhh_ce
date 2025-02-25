@@ -17,6 +17,7 @@
                                 <field name="tipo_planilla_id"/>
                                 <field name="tipo_salario"/>
                                 <field name="tiempo_contrato"/>
+                                <field name="jubilado"/>
                             </group>
                             <group string="Información de Pago">
                                 <field name="diario_pago_id"/>
@@ -53,6 +54,7 @@
                                 <field name="numero_doc"/>
                                 <field name="forma_trabajo_extranjero"/>
                                 <field name="numero_permiso_extranjero"/>
+                                <field name="lugar_nacimiento"/>
                                 <field name="pais_trabajo_extranjero_id"/>
                                 <field name="finalizacion_laboral_extranjero"/>
                             </group>
