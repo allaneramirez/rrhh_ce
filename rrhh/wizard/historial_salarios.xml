@@ -7,7 +7,6 @@
             <field name="arch" type="xml">
             <form string="Calcuo de Salario Historico">
                 <group>
-                    <field name="salario_promedio"/>
                     <field name="name" invisible="1"/>
                     <field name="archivo" readonly="1" filename="name"/>
                 </group>
@@ -21,7 +20,7 @@
     </record>
 
     <record id="action_salario_promedio" model="ir.actions.act_window">
-        <field name="name">Actualizar Salario Historico</field>
+        <field name="name">Reporte de Salarios</field>
         <field name="res_model">rrhh.historial_salarios_wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_rrhh_salario_historico"/>

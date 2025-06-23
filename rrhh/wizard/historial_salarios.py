@@ -7,12 +7,13 @@ from datetime import datetime
 import base64
 import xlsxwriter
 from io import BytesIO
+from odoo.exceptions import ValidationError
 
 
 class rrhh_historial_salarios(models.TransientModel):
     _name = 'rrhh.historial_salarios_wizard'
 
-    salario_promedio = fields.Selection([("6","6 Meses"),("12","12 Meses")],string="Salario Promedio Ultimos", required=True)
+    salario_promedio = fields.Selection([("6","6 Meses"),("12","12 Meses")],string="Salario Promedio Ultimos", required=True, default="12")
     name = fields.Char('Nombre archivo')
     archivo = fields.Binary('Archivo')
 
@@ -21,211 +22,184 @@ class rrhh_historial_salarios(models.TransientModel):
             ids = self.env.context.get('active_ids', [])
 
             contracts = self.env["hr.contract"].search([("state", "=", "open"),("employee_id","in",ids)])
-            salary_months_by_department = defaultdict(lambda: {'empleados':{}})
+            salary_months_by_department = defaultdict(lambda: defaultdict(lambda: {'empleados': {}}))
+            anio_actual = datetime.now().year
+            anio_anterior = anio_actual - 1
+
+            # FECHAS AGUINALDO 30 NOV AL 1 DE DIC
+            fecha_aguinaldo_actual = datetime(anio_actual, 11, 30)
+            fecha_aguinaldo_pasado = datetime(anio_anterior, 12, 1)
+
+            # FECHAS BONO14 1 de JULIO AL 30 JUNIO
+            fecha_bono14_actual = datetime(anio_actual, 7, 1)
+            fecha_bono14_pasado = datetime(anio_anterior, 6, 1)
             for contract in contracts:
                 departamento = contract.employee_id.department_id.name
-                ########## CALCULO DE DIAS LABORADOS PARA EL AGUINALDO
-                """
-                FORMULA: 365 DIAS -----> SALARIO PROMEDIO
-                         DIAS LAB -----> X
-                Sueldo ordinario mensual x días laborados ÷ 365 días.         
-                """
-                anio_actual = datetime.now().year
-                anio_anterior = anio_actual - 1
-
-                #FECHAS AGUINALDO 30 NOV AL 1 DE DIC
-                fecha_aguinaldo_actual = datetime(anio_actual, 12, 1)
-                fecha_aguinaldo_pasado = datetime(anio_anterior, 12, 1)
-
-                #FECHAS BONO14 1 de JULIO AL 30 JUNIO
-                fecha_bono14_actual = datetime(anio_actual, 7, 1)
-                fecha_bono14_pasado = datetime(anio_anterior, 7, 1)
-                anio_contrato = contract.date_start.year
-                ###### DIAS AGUINALDO
-                # SI EL INICIO DEL CONTRATO ES MENOR O IGUAL AL FECHA  DEL ANIO PASADO
-                "QUIERE DECIR QUE EL EMPPLEADO HA TRABAJADO MAS DE UN AÑO EN LA EMPRESA POR LO TANTO LE CORRESPONDE 365/360 TOTAL LABORADOS"
-                if contract.date_start <= fecha_aguinaldo_pasado.date():
-                    dias = 365
-                    contract.employee_id.write({'dias_laborados_aguinaldo': dias})
-                # DE LO CONTRARIO LO PRORRATEAMOS
-                elif contract.date_start > fecha_aguinaldo_pasado.date():
-                    dias = (fecha_aguinaldo_actual.date() - contract.date_start).days
-                    contract.employee_id.write({'dias_laborados_aguinaldo': dias})
-
-                ##### DIAS BONO 14
-                if contract.date_start <= fecha_bono14_pasado.date():
-                    dias = 365
-                    contract.employee_id.write({'dias_laborados_bono14': dias})
-                elif contract.date_start > fecha_bono14_pasado.date():
-                    dias = (fecha_bono14_actual.date() - contract.date_start).days
-                    contract.employee_id.write({'dias_laborados_bono14': dias})
-
-                ######################################################
-                historial_salarios = self.env["rrhh.historial_salario"].search([("contrato_id", "=", contract.id)])
-                historial_salarios.unlink()
-                limit = 6
-                if w.salario_promedio == '12':
-                    # PARA ASFALGUA TRAEMOS LAS PLANILLAS POR MES YA QUE ES QUINCENAL
-                    limit = 12
-                slips = self.env["hr.payslip"].search([
-                    "&",
-                    ("contract_id", "=", contract.id),
-                    ("state", "=", "done"),
-                    ("struct_id.name", "like", "2da"),
-                ], order='date_to ASC', limit=limit)
-                total_salarios = 0
-                contador_salarios = 0
-
-                salarios_mensuales = []
-                # SUMAMOS EL TOTAL DEL  EL MES (SEGURAMENTE HAY QUE DESCONTAR LO DEL INCENTIVO)
-                for slip in slips:
-
-                    #### CALCULAMOS PROMEDIO SEGUN LAS REGLAS DE COMPANIA
-                    sal_prom = 0
-                    for line in slip.line_ids:
-                        if line.salary_rule_id.id in slip.company_id.salario_promedio_ids.ids:
-                            sal_prom += line.total
-                            if contract.employee_id.department_id.name == "ADMINISTRACION" and line.salary_rule_id.name == "Otros Ingresos V/A":
-                                sal_prom -= line.total
-
-                    self.env['rrhh.historial_salario'].create({
-                        'salario': sal_prom,
-                        'fecha': slip.date_from,
-                        'contrato_id': contract.id,
-                        'employee_id': contract.employee_id.id
-                    })
-                    total_salarios += slip.net_wage
-                    contador_salarios += 1
-
-                    mes = slip.date_to.strftime('%m')  # Ejemplo: '2024-12'
-                    salarios_mensuales.append({mes: slip.net_wage})
-
-                    # Calcular el promedio
-
-                    # Calcula el promedio solo si hay salarios
-                    promedio_salario = total_salarios / contador_salarios if contador_salarios > 0 else 0
-                    contract.employee_id.write({'salario_promedio': promedio_salario})
-
-                    # Agrupar los salarios por departamento y empleado
-                    salary_months_by_department[departamento]["empleados"].setdefault(contract.employee_id.name, {
-                        'salarios': [],
-                        'fecha_ingreso': contract.date_start,
-                        'codigo': contract.employee_id.codigo_empleado,
-                        'dlab':contract.employee_id.dias_laborados_aguinaldo,
-                        'dlabb14':contract.employee_id.dias_laborados_bono14
-                    })
-                    mes = slip.date_to.strftime('%m')  # Formato único para mes y año
-                    salarios_empleado = \
-                    salary_months_by_department[departamento]["empleados"][contract.employee_id.name]['salarios']
-
-                    # Comprobar si ya existe un salario para este mes
-                    if not any(salary['mes'] == f"Mes {mes}" for salary in salarios_empleado):
-                        salarios_empleado.append({
-                            "mes": f"Mes {mes}",
-                            "salario": sal_prom
-                        })
-
-                        # Calcular el promedio
-                print(salary_months_by_department,"david!!!")
-                # Calcula el promedio solo si hay salarios
-                promedio_salario = total_salarios / contador_salarios if contador_salarios > 0 else 0
-                contract.employee_id.write({'salario_promedio': promedio_salario})
 
 
 
+                ######## CALCULO PARA EL EXCEL DE LIBNY
 
+                for fecha_prestacion in [fecha_aguinaldo_actual, fecha_bono14_actual]:
+                    tipo_prestacion = 'AGUINALDO' if fecha_prestacion == fecha_aguinaldo_actual else 'BONO 14'
+                    if tipo_prestacion == "AGUINALDO":
+                        fecha_inicial = fecha_aguinaldo_pasado
+                    else:
+                        fecha_inicial = fecha_bono14_pasado
 
+                    slips = self.env["hr.payslip"].search([
+                        "&",
+                        ("contract_id", "=", contract.id),
+                        ("state", "=", "done"),
+                        ("struct_id.name", "like", "2da"),
+                        ("date_from", ">=",fecha_inicial),
+                        ("date_to", "<=",fecha_prestacion),
+                        ("net_wage","!=", 0)
+                    ], order='date_to DESC', limit=12)
+                    # para segurarmos que el slip pertence al anio correcto
+                    slips_filtrados = []
+                    for slip in slips:
+                        mes = int(slip.date_to.strftime('%m'))
+                        anio = int(slip.date_to.strftime('%Y'))
+
+                        if tipo_prestacion == "BONO 14":
+                            if (mes >= 7 and anio == anio_anterior) or (mes <= 6 and anio == anio_actual):
+                                slips_filtrados.append(slip)
+                        else:  # AGUINALDO
+                            if (mes == 12 and anio == anio_anterior) or (mes <= 11 and anio == anio_actual):
+                                slips_filtrados.append(slip)
+                    # fin filtro
+
+                    total_salarios = 0
+                    salarios_empleado  = []
+                    total_dias = 0
+
+                    # SUMAMOS EL TOTAL DEL  EL MES (SEGURAMENTE HAY QUE DESCONTAR LO DEL INCENTIVO)
+                    for slip in slips_filtrados:
+                        #### CALCULAMOS PROMEDIO SEGUN LAS REGLAS DE COMPANIA
+                        sal_base = 0
+
+                        for line in slip.line_ids:
+                            if line.salary_rule_id.id in slip.company_id.salario_promedio_ids.ids:
+                                sal_base += line.total
+                        dias_lab = sum(
+                            input.amount for input in slip.input_line_ids
+                            if input.code == 'DL'
+                        )
+
+                        total_salarios += sal_base
+                        total_dias += dias_lab
+
+                        mes = slip.date_to.strftime('%m')  # Formato único para mes y año
+                        if not any(mes in salario for salario in salarios_empleado):
+                            salarios_empleado.append({mes:sal_base})
+
+                        # Ahora que terminamos todos los slips, calculamos los valores agregados
+                    promedio_salario = total_salarios / len(slips) if slips else 0
+                    dlab = (total_dias * 30) / 360
+                    salary_months_by_department[tipo_prestacion][departamento]["empleados"].setdefault(
+                        contract.employee_id.name,
+                        {
+                            'salarios': salarios_empleado,
+                            'fecha_ingreso': contract.date_start,
+                            'codigo': contract.employee_id.codigo_empleado,
+                            'total_devengado': total_salarios,
+                            'sal_promedio': promedio_salario/30,
+                            'dlab': dlab,
+                            "total_prestacion": dlab*promedio_salario
+                        }
+                    )
     ######################################             ARCHIOV EXCEL   ######################################
-                ###################################### ARCHIVO EXCEL ######################################
                 # Crear archivo Excel
-                print(salary_months_by_department, "salary!!!")
-                output = BytesIO()
-                workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+            output = BytesIO()
+            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
 
                 # Extraer los meses y años únicos
-                all_months_years = set()
-                for dept_data in salary_months_by_department.values():
-                    for employee_data in dept_data["empleados"].values():
-                        for salary in employee_data['salarios']:
-                            all_months_years.add(salary["mes"])
-                all_months_years = sorted(all_months_years)
-
                 # Recorrer cada departamento y crear una hoja por departamento
-                for department, dept_data in salary_months_by_department.items():
-                    sheet = workbook.add_worksheet(department)  # Crear hoja por departamento
 
-                    # Definir formatos
-                    bold_format = workbook.add_format({'bold': True, 'align': 'center'})
-                    headerformat = workbook.add_format({'bold': True})
-                    currency_format = workbook.add_format({'num_format': '#,##0.00', 'align': 'center'})
+            for tipo_prestacion, departamentos in salary_months_by_department.items():
+                if tipo_prestacion == "AGUINALDO":
+                    meses = ["12", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"]
+                else:
+                    meses = ["07", "08", "09", "10", "11", "12", "01", "02", "03", "04", "05", "06"]
 
-                    # Escribir encabezados generales
-                    sheet.write(0, 2, "ABSORBENTES, S.A.", headerformat)
-                    sheet.write(1, 2, "Historial de Salario para el cálculo de prestaciones", headerformat)
-                    sheet.write(2, 2, f"{department} {anio_actual}", headerformat)
-                    sheet.set_column(5, 2, 25)
-                    sheet.set_column(5, 3, 25)
-                    sheet.set_column(5, 4, 25)
-                    # Escribir los encabezados de las columnas
-                    sheet.write(5, 2, "NO.", bold_format)
-                    sheet.write(5, 3, "Codigo de Empleado", bold_format)
-                    sheet.write(5, 4, "Nombre del Empleado", bold_format)
-                    sheet.write(5, 5, "Fecha de Ingreso", bold_format)
+                sheet = workbook.add_worksheet(tipo_prestacion)  # Crear hoja por departamento
 
-                    # Escribir los encabezados de los meses
-                    j=6
-                    for col_index, month in enumerate(all_months_years, start=6):
-                        sheet.write(5, col_index, f"{month}", bold_format)
-                        j += 1
+                # Definir formatos
+                bold_format = workbook.add_format({'bold': True, 'align': 'center','valign': 'vcenter','top': 1, 'bottom': 1})
+                bold_format_leftalign = workbook.add_format({'bold': True, 'align': 'left'})
+                headerformat = workbook.add_format({'bold': True, })
+                currency_format = workbook.add_format({'num_format': '#,##0.00', })
 
-                    sheet.write(5, j , "Salario Promedio", bold_format)
-                    sheet.write(5, j+1 , "Dias Laborados Aguinaldo", bold_format)
-                    sheet.write(5, j+2 , "Dias Laborados Bono 14", bold_format)
-                    # Escribir los datos de los empleados
-                    row = 6  # Iniciar fila de empleados
-                    i = 1  # Contador de empleados
-                    for employee, data in dept_data["empleados"].items():
-                        # Escribir los datos generales del empleado
-                        sheet.write(row, 2, i)  # Número del empleado
-                        sheet.write(row, 3, data['codigo'])  # Código del empleado
-                        sheet.write(row, 4, employee)  # Nombre del empleado
-                        sheet.write(row, 5, data['fecha_ingreso'].strftime('%Y-%m-%d'))  # Fecha de ingreso
+                # Escribir encabezados generales
+                sheet.write(0, 1, "ABSORBENTES, S.A.", headerformat)
+                if tipo_prestacion == "AGUINALDO":
+                    sheet.write(1, 1, f"COMPRENDIDA DE DICIEMBRE {anio_anterior} A NOVIEMBRE {anio_actual}", headerformat)
+                else:
+                    sheet.write(1, 1, f"COMPRENDIDA DE JUlIO {anio_anterior} A JUNIO {anio_actual}", headerformat)
 
-                        col_index = 6  # Comenzar en la columna 6 para los salarios
+                sheet.set_column(0, 0, 5)
+                sheet.set_column(1, 1, 20)
+                sheet.set_column(2, 2, 35)
+                sheet.set_column(3, 3, 20)
+                sheet.set_row(3, 30)
+                # ENCABEZADOS
+                sheet.write(3, 0, "NO.", bold_format)
+                sheet.write(3, 1, "CODIGO", bold_format)
+                sheet.write(3, 2, "NOMBRE DEL EMPLEADO", bold_format)
+                sheet.write(3, 3, "FECHA DE INGRESO", bold_format)
+
+                # ENCAVBEZADOS MESES
+                j=4
+                for col_index, month in enumerate(meses, start=4):
+                    sheet.write(3, col_index, f"{month}", bold_format)
+                    j += 1
+                sheet.set_column( j,j+3, 20)
+
+                sheet.write(3, j , "TOTAL DEVENGADO", bold_format)
+                sheet.write(3, j+1 , "S/DIARIO PROEMDIO", bold_format)
+                sheet.write(3, j+2 , "DIAS A PAGAR", bold_format)
+                sheet.write(3, j+3 , tipo_prestacion, bold_format)
+
+                row = 4
+                  # Contador de empleados
+                for depa, data in departamentos.items():
+                    sheet.merge_range(row,0, row,3, depa.capitalize(), bold_format_leftalign)
+                    # DATIS EMPLEADOS
+                    i = 1
+                    for empleado, data in data["empleados"].items():
+                        row += 1
+                        sheet.write(row, 0, i)  # Número del empleado
+                        sheet.write(row, 1, data['codigo'])  # Código del empleado
+                        sheet.write(row, 2, empleado)  # Nombre del empleado
+                        sheet.write(row, 3, data['fecha_ingreso'].strftime('%d/%m/%Y'))  # Fecha de ingreso
+                        # SALARIOS
+                        col = 4  # Comienza en la columna después de Fecha de Ingreso
+                        for mes in meses:
+                            salario_mes = next((s[mes] for s in data['salarios'] if mes in s), "-")
+                            sheet.write(row, col, salario_mes,currency_format)
+                            col += 1
+                        sheet.write(row, col, data["total_devengado"],currency_format)  # Número del empleado
+                        sheet.write(row, col+1, data['sal_promedio'],currency_format)  # Código del empleado
+                        sheet.write(row, col+2, round(data["dlab"],2),)  # Nombre del empleado
+                        sheet.write(row, col+3, data['total_prestacion'],currency_format)  # Fecha de ingreso
+                        # SALARIOS
+
+                        i += 1
+                    row += 1
 
 
-                        salario = 0
-                        cantidad = 0
 
-                        # Iterar por cada mes/año en el conjunto completo
-                        for month in all_months_years:
-                            # Buscar si existe un salario para este mes
-                            salario_mes = next((sal["salario"] for sal in data["salarios"] if sal["mes"] == month), 0)
-                            sheet.write(row, col_index, salario_mes, currency_format)
-                            col_index += 1
-                            salario += salario_mes
-                            cantidad += 1 if salario_mes > 0 else 0
+            # Guardar el archivo Excel
+            workbook.close()
+            output.seek(0)
 
-                        # Escribir el salario promedio calculado
-                        promedio_salario = round(float(salario / cantidad), 2) if cantidad > 0 else 0
-                        sheet.write(row, col_index, promedio_salario, currency_format)
-                        sheet.write(row, col_index + 1, data['dlab'])
-                        sheet.write(row, col_index + 2, data['dlabb14'])
-
-                        row += 1  # Avanzar a la siguiente fila
-                        i += 1  # Incrementar el contador de empleados
-
-                # Guardar el archivo Excel
-                workbook.close()
-                output.seek(0)
-
-                # Convertir a base64 y asignar el archivo al modelo
-                self.write({
-                    'archivo': base64.b64encode(output.read()),
-                    'name': 'Historial_Salarios.xlsx',
-                })
-                output.close()
-
+            # Convertir a base64 y asignar el archivo al modelo
+            self.write({
+                'archivo': base64.b64encode(output.read()),
+                'name': 'Historial_Salarios.xlsx',
+            })
+            output.close()
 
         return {
             'view_type': 'form',
