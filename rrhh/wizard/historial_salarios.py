@@ -36,12 +36,9 @@ class rrhh_historial_salarios(models.TransientModel):
             for contract in contracts:
                 departamento = contract.employee_id.department_id.name
 
-
-
                 ######## CALCULO PARA EL EXCEL DE LIBNY
-
                 for fecha_prestacion in [fecha_aguinaldo_actual, fecha_bono14_actual]:
-                    tipo_prestacion = 'AGUINALDO' if fecha_prestacion == fecha_aguinaldo_actual else 'BONO 14'
+                    tipo_prestacion = 'BONO 14' if fecha_prestacion == fecha_bono14_actual else 'AGUINALDO'
                     if tipo_prestacion == "AGUINALDO":
                         fecha_inicial = fecha_aguinaldo_pasado
                     else:
@@ -78,10 +75,17 @@ class rrhh_historial_salarios(models.TransientModel):
                     for slip in slips_filtrados:
                         #### CALCULAMOS PROMEDIO SEGUN LAS REGLAS DE COMPANIA
                         sal_base = 0
-
+                        depto = slip.employee_id.department_id.name
                         for line in slip.line_ids:
-                            if line.salary_rule_id.id in slip.company_id.salario_promedio_ids.ids:
-                                sal_base += line.total
+                            regla = line.salary_rule_id
+
+                            if regla.id in slip.company_id.salario_promedio_ids.ids:
+
+                                if regla.name == 'Otros Ingresos V/A' and depto != 'Ventas':
+                                    sal_base += 0
+                                else:
+                                    sal_base += line.total
+
                         dias_lab = sum(
                             input.amount for input in slip.input_line_ids
                             if input.code == 'DL'
@@ -96,6 +100,7 @@ class rrhh_historial_salarios(models.TransientModel):
 
                         # Ahora que terminamos todos los slips, calculamos los valores agregados
                     promedio_salario = total_salarios / len(slips) if slips else 0
+                    promedio_diario = promedio_salario/30
                     dlab = (total_dias * 30) / 360
                     salary_months_by_department[tipo_prestacion][departamento]["empleados"].setdefault(
                         contract.employee_id.name,
@@ -104,9 +109,9 @@ class rrhh_historial_salarios(models.TransientModel):
                             'fecha_ingreso': contract.date_start,
                             'codigo': contract.employee_id.codigo_empleado,
                             'total_devengado': total_salarios,
-                            'sal_promedio': promedio_salario/30,
+                            'sal_promedio': promedio_diario,
                             'dlab': dlab,
-                            "total_prestacion": dlab*promedio_salario
+                            "total_prestacion": dlab*promedio_diario
                         }
                     )
     ######################################             ARCHIOV EXCEL   ######################################
@@ -179,10 +184,10 @@ class rrhh_historial_salarios(models.TransientModel):
                             salario_mes = next((s[mes] for s in data['salarios'] if mes in s), "-")
                             sheet.write(row, col, salario_mes,currency_format)
                             col += 1
-                        sheet.write(row, col, data["total_devengado"],currency_format)  # Número del empleado
-                        sheet.write(row, col+1, data['sal_promedio'],currency_format)  # Código del empleado
-                        sheet.write(row, col+2, round(data["dlab"],2),)  # Nombre del empleado
-                        sheet.write(row, col+3, data['total_prestacion'],currency_format)  # Fecha de ingreso
+                        sheet.write(row, col, data["total_devengado"],currency_format)
+                        sheet.write(row, col+1, data['sal_promedio'],currency_format)
+                        sheet.write(row, col+2, round(data["dlab"],2),)
+                        sheet.write(row, col+3, round(data['total_prestacion'],2),currency_format)  # Total de prestacion
                         # SALARIOS
 
                         i += 1
