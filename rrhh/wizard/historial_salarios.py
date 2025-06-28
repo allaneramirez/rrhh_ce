@@ -14,6 +14,8 @@ class rrhh_historial_salarios(models.TransientModel):
     _name = 'rrhh.historial_salarios_wizard'
 
     salario_promedio = fields.Selection([("6","6 Meses"),("12","12 Meses")],string="Salario Promedio Ultimos", required=True, default="12")
+    salario_promedio_wz_ids = fields.Many2many('hr.salary.rule','rrhh_salario_wz_promedio_rel', string="Reglas para Salario promedio")
+
     name = fields.Char('Nombre archivo')
     archivo = fields.Binary('Archivo')
 
@@ -79,8 +81,7 @@ class rrhh_historial_salarios(models.TransientModel):
                         for line in slip.line_ids:
                             regla = line.salary_rule_id
 
-                            if regla.id in slip.company_id.salario_promedio_ids.ids:
-
+                            if regla in w.salario_promedio_wz_ids:
                                 if regla.name == 'Otros Ingresos V/A' and depto != 'Ventas':
                                     sal_base += 0
                                 else:

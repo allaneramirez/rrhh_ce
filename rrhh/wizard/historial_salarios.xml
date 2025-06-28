@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
             <form string="Calcuo de Salario Historico">
                 <group>
+                    <field name="salario_promedio_wz_ids" widget="many2many_tags"/>
                     <field name="name" invisible="1"/>
                     <field name="archivo" readonly="1" filename="name"/>
                 </group>
