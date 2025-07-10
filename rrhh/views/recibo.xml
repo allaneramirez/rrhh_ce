@@ -563,6 +563,56 @@
                         </div>
                     </t>
 
+
+
+		     <t t-if="tipo_nomina == 'bono_14'">
+                        <div class="receipt mt32" style="height:800px;">
+                            <div class="header">
+                                <h2 style="text-align: center; padding-top:100px; margin-top:100px">Constancia de
+                                    Bonificación Incentivo Anual
+                                </h2>
+                            </div>
+
+                            <div class="page">
+                                <p style="text-align:center; font-size:25px; padding-top:125px">RECIBO</p>
+                                <div class="oe_structure"/>
+
+                                <div class="row mt32" style="font-size:25px">
+                                    <div>
+                                        <p style="text-align: start; padding-top:50px">Por
+                                            <span t-esc="formato_salario(o.net_wage)"/>
+                                        </p>
+                                        <p style="padding-top:20px; text-align:justify">Recibí de
+                                            <span t-field="o.company_id.name" style="font-weight:600"/>
+                                            <span>&#160;&#160;&#160;la cantidad de</span>
+                                            <span t-esc="formato_salario(o.net_wage)" style="font-weight:600"/>
+                                            <span style="font-weight:600">Quetzales.</span>
+                                            En concepto de bonificación anual contenida en el Decreto 42-92 del Congreso
+                                            de la República, Correspondiente al período del uno de julio del año<span
+                                                    t-esc="previous_year"/>al
+                                            treinta de junio del año
+                                            <span t-esc="current_year"/>
+                                            .
+                                        </p>
+
+                                        <!--                                        <p>Correspondiente al período del-->
+                                        <!--                                            <span t-field="o.date_from"/>-->
+                                        <!--                                            al <span t-field="o.date_to"/>.-->
+                                        <!--                                        </p>-->
+                                        <div style="text-align:center; width:100%; padding-top:85px ">
+                                            <p>f)___________________________________________
+
+                                            </p>
+                                            <span t-field="o.employee_id.name"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>	
+
+
                     <!-- Aguinaldo-->
                     <t t-if="tipo_nomina == 'aguinaldo'">
                         <div class="receipt" style="height:800px;">
