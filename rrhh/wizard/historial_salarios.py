@@ -91,9 +91,26 @@ class rrhh_historial_salarios(models.TransientModel):
                             input.amount for input in slip.input_line_ids
                             if input.code == 'DL'
                         )
+                        ################### OBTENER DIAS DE AUSENCIAS
+                        run = slip.payslip_run_id
+                        date_start = run.date_start
+                        date_end = run.date_end
+
+                        leaves = self.env['hr.leave'].search([
+                            ('employee_id', '=', slip.employee_id.id),
+                            ('state', '=', 'validate'),
+                            ('request_date_to', '>=', date_start),
+                            ('request_date_from', '<=', date_end),
+                            ('holiday_status_id.include_in_avg_salary','=',True)
+
+                        ])
+
+                        dias_ausencias = sum(leave.number_of_days for leave in leaves)
+
 
                         total_salarios += sal_base
                         total_dias += dias_lab
+                        total_dias += dias_ausencias
 
                         mes = slip.date_to.strftime('%m')  # Formato único para mes y año
                         if not any(mes in salario for salario in salarios_empleado):
